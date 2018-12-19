@@ -1,11 +1,15 @@
 <?php
 namespace app\admin\controller;
 
-use think\Container;
+use think\Controller;
 
-class Common extends Container
+class Common extends Controller
 {
-    public function index()
+    const VALIDATE_SCENE = 'admin_add';
+    //当前登录者用户id
+    protected $admin_id = 0;
+
+    public function initialize()
     {
 
     }

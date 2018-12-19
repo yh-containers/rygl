@@ -9,7 +9,7 @@ class Manage extends Common
     public function index()
     {
         $model = new \app\common\model\Admin();
-        $list = $model->paginate();
+        $list = $model->paginate(1);
         return view('index',[
             'list' => $list,
             'page' => $list->render(),

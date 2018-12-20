@@ -12,6 +12,7 @@ class Base extends Model
     public static $fields_status = ['','正常','关闭'];
     protected $autoWriteTimestamp = true;
 
+
     //添加动作
     public function actionAdd($input_data,Validate $validate=null)
     {

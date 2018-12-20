@@ -9,7 +9,7 @@ class Manage extends Common
     public function index()
     {
         $model = new \app\common\model\Admin();
-        $list = $model->paginate(1);
+        $list = $model->with(['linkRole'])->paginate();
         return view('index',[
             'list' => $list,
             'page' => $list->render(),
@@ -33,8 +33,14 @@ class Manage extends Common
             return $model->actionAdd($input_data,$validate);
         }
         $model = $model->find($id);
+
+        //角色列表
+        $model_role = new \app\common\model\SysRole();
+        $role_list = $model_role->where('status',1)->select();
+
         return view('add',[
-            'model' => $model
+            'model' => $model,
+            'role_list' => $role_list
         ]);
     }
 
@@ -44,6 +50,44 @@ class Manage extends Common
     {
         $id = $this->request->param('id',0,'intval');
         $model = new \app\common\model\Admin();
+        return $model->actionDel($id);
+    }
+
+    //角色--列表
+    public function roles()
+    {
+        $model = new \app\common\model\SysRole();
+        $list = $model->paginate();
+        return view('roles',[
+            'list' => $list,
+            'page' => $list->render(),
+        ]);
+    }
+
+    //角色--新增/编辑
+    public function rolesAdd()
+    {
+        $id = $this->request->param('id',0,'intval');
+        $model = new \app\common\model\SysRole();
+        if($this->request->isAjax()) {
+            $validate = new \app\common\validate\SysRole();
+            $validate->scene(self::VALIDATE_SCENE);
+
+            $input_data = $this->request->param();
+
+            return $model->actionAdd($input_data,$validate);
+        }
+        $model = $model->find($id);
+        return view('rolesAdd',[
+            'model' => $model
+        ]);
+    }
+
+    //角色---删除
+    public function rolesDel()
+    {
+        $id = $this->request->param('id',0,'intval');
+        $model = new \app\common\model\SysRole();
         return $model->actionDel($id);
     }
 }

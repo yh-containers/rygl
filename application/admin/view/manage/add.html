@@ -1,5 +1,5 @@
 ﻿{extend name="base"}
-{block name="title"}我的桌面11{/block}
+{block name="title"}我的桌面{/block}
 
 {block name="crumb"}首页,管理员管理,管理员操作{/block}
 
@@ -20,6 +20,16 @@
 			</div>
 		</div>
 		<div class="layui-form-item">
+			<label class="layui-form-label">角色</label>
+			<div class="layui-input-block">
+				<select name="rid" >
+					{volist name="role_list" id="vo"}
+						<option value="{$vo['id']}">{$vo['name']}</option>
+					{/volist}
+				</select>
+			</div>
+		</div>
+		<div class="layui-form-item">
 			<label class="layui-form-label">密码</label>
 			<div class="layui-input-block">
 				<input type="password" name="password" placeholder="请输入密码"  class="layui-input">
@@ -30,7 +40,7 @@
 			<label class="layui-form-label">状态</label>
 			<div class="layui-input-block">
 				<input type="radio" name="status" value="1" {:empty($model)?'checked':($model['status']===1?'checked':'')} title="正常">
-				<input type="radio" name="status" value="0" {:$model['status']===0?'checked':''} title="禁用">
+				<input type="radio" name="status" value="2" {:$model['status']===2?'checked':''} title="禁用">
 			</div>
 		</div>
 

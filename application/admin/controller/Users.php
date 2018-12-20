@@ -12,4 +12,5 @@ class Users extends Common
             'page' => $list->render(),
         ]);
     }
+
 }

@@ -1,0 +1,39 @@
+﻿{extend name="base"}
+{block name="title"}我的桌面{/block}
+
+{block name="crumb"}首页,系统设置,协议管理{/block}
+
+{block name="content"}
+<article class="page-container">
+	<form class="layui-form" action="{:url('system/cacheAction')}">
+		<input type="hidden" name="type" value="{$type}"/>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" type="button" onclick="$.common.submit($(this).parents('form'))">保存({:isset($type_info[$type])?$type_info[$type]:''})</button>
+            </div>
+        </div>
+
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<textarea id="demo" style="display: none;" name="content">{$content}</textarea>
+			</div>
+		</div>
+
+	</form>
+</article>
+
+
+{/block}
+{block name="script"}
+
+<script>
+    //Demo
+    layui.use(['form','layedit'], function(){
+        var form = layui.form;
+        var layedit = layui.layedit;
+        $.common.full_text(layedit,'protocol','demo')
+
+    });
+</script>
+{/block}

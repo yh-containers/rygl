@@ -6,6 +6,8 @@ use think\Container;
 
 class Common
 {
+    const SCENE = 'api_opt';
+
     protected $app;
     /**
      * Request实例

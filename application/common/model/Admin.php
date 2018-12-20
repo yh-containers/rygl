@@ -20,7 +20,7 @@ class Admin extends Base
         $salt = rand(1000,9999);
         $this->setAttr('salt',$salt);
 
-        return pwdEncrypt($value,$salt);//md5($value.md5($value.$salt).$salt);
+        return self::pwdEncrypt($value,$salt);//md5($value.md5($value.$salt).$salt);
     }
 
     /*

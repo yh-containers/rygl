@@ -6,7 +6,7 @@ use think\Validate;
 class Admin extends Validate
 {
     protected $rule = [
-        'account'       => 'require|min:4|unique:sys_admin',
+        'account'       => 'require|min:4|checkUnique',
         'name'          => 'require',
         'password'      => 'min:6',
 
@@ -33,5 +33,17 @@ class Admin extends Validate
             ->append('password','require')
             ->remove('account','unique')
             ;
+    }
+
+    //验证帐号唯一
+    public function checkUnique($value,$rule,$data=[])
+    {
+        $model = model('Admin');
+        $where = [
+            ['account','=',$value],
+            ['id','<>',empty($data['id'])?0:$data['id']]
+        ];
+        $info = $model->where($where)->find();
+        return empty($info)?true:'用户名已存在';
     }
 }

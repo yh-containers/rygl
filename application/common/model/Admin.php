@@ -55,7 +55,7 @@ class Admin extends Base
 
         //更新登录信息
         $role_info = $user_info->linkRole;
-        
+
         $user_info->last_time = time();
         $user_info->login_ip = request()->ip();
         $user_info->save();

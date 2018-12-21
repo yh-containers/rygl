@@ -52,7 +52,7 @@ class Users extends Base
     }
 
 
-    //添加用户
+    //用户登录
     public function accountLogin($account,$password)
     {
         $where = [
@@ -70,9 +70,23 @@ class Users extends Base
             abort(40002,'用户名或密码不正确');
         }
         return $user_info->handleLoginInfo();
-
-
     }
+
+    /*
+     * 刷新用户登录凭证
+     * */
+    public function refreshToken($user_id)
+    {
+        $user_info = $this->find($user_id);
+
+        if(empty($user_info)){
+            abort(40001,'用户信息异常');
+        }
+        //验证用户信息
+        $user_info->checkInfo();
+        return $user_info->handleLoginInfo();
+    }
+
 
     /*
      * 特殊操作特殊处理-
@@ -124,7 +138,6 @@ class Users extends Base
             'opt_menu'  =>  $this->getOptMenu(),             //用户可以操作的栏目
             'time'      => time()
         ];
-
         return self::tokenEncrypt($data);
     }
 
@@ -165,15 +178,15 @@ class Users extends Base
     {
         //忽略字段
         unset($data['opt_menu']);
+
         //绑定user_agent
         $data['user_agent'] = request()->header('user-agent');
         ksort($data);
         $str = '';
         foreach ($data as $key=>$vo) {
-            $str = $key.'='.$vo.'&';
+            $str .= $key.'='.$vo.'&';
         }
         $str = substr($str,0,-1);
-
         unset($data['user_agent']);
         return  sha1($str);
     }

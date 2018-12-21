@@ -46,4 +46,11 @@ class User extends Common
         return jsonOut($bool?'修改成功':'修改失败',(int)$bool);
     }
 
+    //刷新用户凭证
+    public function refreshToken()
+    {
+        $model =  new \app\common\model\Users();
+        $token = $model->refreshToken($this->user_id);
+        return jsonOut('获取成功',1,$token);
+    }
 }

@@ -1,0 +1,49 @@
+﻿{extend name="base"}
+{block name="title"}我的桌面{/block}
+
+{block name="crumb"}首页,行业管理,行业操作{/block}
+
+{block name="content"}
+<article class="page-container">
+	<form class="layui-form" action="">
+		<input type="hidden" name="id" value="{$model['id']}"/>
+		<div class="layui-form-item">
+			<label class="layui-form-label">名称</label>
+			<div class="layui-input-block">
+				<input type="text" name="name" value="{$model['name']}"  placeholder="行业名称" class="layui-input">
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<label class="layui-form-label">状态</label>
+			<div class="layui-input-block">
+				<input type="radio" name="status" value="1" {:empty($model)?'checked':($model['status']===1?'checked':'')} title="正常">
+				<input type="radio" name="status" value="2" {:$model['status']===2?'checked':''} title="禁用">
+			</div>
+		</div>
+
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button class="layui-btn" type="button" onclick="$.common.submit($(this).parents('form'))">立即提交</button>
+			</div>
+		</div>
+	</form>
+</article>
+
+
+{/block}
+{block name="script"}
+
+<script>
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+    });
+</script>
+{/block}

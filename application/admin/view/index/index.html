@@ -15,7 +15,7 @@
 <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/skin/default/skin.css" id="skin" />
 <link rel="stylesheet" type="text/css" href="/static/h-ui.admin/css/style.css" />
 
-<title>人员管理后台</title>
+<title>{:config('app_name')}</title>
 </head>
 <body>
 <header class="navbar-wrapper">
@@ -30,7 +30,7 @@
 				<li class="dropDown dropDown_hover">
 					<a href="#" class="dropDown_A">{:session('admin_info.admin_name')} <i class="Hui-iconfont">&#xe6d5;</i></a>
 					<ul class="dropDown-menu menu radius box-shadow">
-						<li><a href="{:url('index/login')}">切换账户</a></li>
+						<li><a href="{:url(session('admin_info.is_admin')?'index/login':'index/companyLogin')}">切换账户</a></li>
 						<li><a href="{:url('index/logout')}">退出</a></li>
 				</ul>
 			</li>

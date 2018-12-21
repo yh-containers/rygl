@@ -4,13 +4,13 @@ namespace app\admin\controller;
 
 class Index extends Common
 {
-    protected $ignore_auth = 'login';
+    protected $ignore_auth = 'login,companyLogin';
 
 
     public function index()
     {
         $model = new \app\common\model\Node();
-        $node =  $model->tree();
+        $node =  $model->tree($this->is_admin);
         return view('index',[
             'node'=>$node
         ]);
@@ -24,7 +24,7 @@ class Index extends Common
     }
 
     /*
-     * 用户登录
+     * 用户登录--管理员登录
      * */
     public function login()
     {
@@ -42,6 +42,29 @@ class Index extends Common
         }
 
         return view('login',[
+
+        ]);
+    }
+
+    /*
+     * 用户登录--公司登录
+     * */
+    public function companyLogin()
+    {
+        //处理登录
+        if($this->request->isAjax() || $this->request->isPost()){
+            $model = new \app\common\model\Admin();
+            $input_data = $this->request->param();
+            list($state,$msg) = $model->handleCompanyLogin($input_data);
+            if(!$state) {
+                $this->error($msg);
+            }
+
+            $this->redirect('index/index');
+
+        }
+
+        return view('companyLogin',[
 
         ]);
     }

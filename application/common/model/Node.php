@@ -8,13 +8,18 @@ class Node extends Base
     /*
      * 获取菜单树--只有两级
      * */
-    public function tree()
+    public function tree($is_admin=false)
     {
         $where = [
             ['status','=',1],
             ['pid','=',0],
             ['level','=',1],
         ];
+        if($is_admin) { //管理员界面
+            $where[] =['is_admin','=',1];
+        }else{      //员工界面
+            $where[] =['is_company','=',1];
+        }
         $data = $this->with(['linkNode'=>function($query){
             return $query->where('status',1);
         }])->where($where)->order('sort','asc')->select();

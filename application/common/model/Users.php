@@ -43,17 +43,7 @@ class Users extends Base
     }
 
     //检测用户各种问题
-    public function checkInfo()
-    {
-        if($this->status==2) {
-            abort(40001,'账号已被禁用');
-        }
-
-    }
-
-
-    //用户登录
-    public function accountLogin($account,$password)
+    public function checkInfo($account,$password)
     {
         $where = [
             ['phone','=',$account]
@@ -63,12 +53,26 @@ class Users extends Base
         if(empty($user_info)){
             abort(40001,'用户名或密码不正确');
         }
-        //验证用户信息
-        $user_info->checkInfo();
 
         if($user_info['password'] != self::pwdEncrypt($password,$user_info['salt'])) {
             abort(40002,'用户名或密码不正确');
         }
+
+        if($user_info->status==2) {
+            abort(40001,'账号已被禁用');
+        }
+
+        return $user_info;
+    }
+
+
+    //用户登录
+    public function accountLogin($account,$password)
+    {
+
+        //验证用户信息
+        $user_info = $this->checkInfo($account,$password);
+
         return $user_info->handleLoginInfo();
     }
 
@@ -189,5 +193,11 @@ class Users extends Base
         $str = substr($str,0,-1);
         unset($data['user_agent']);
         return  sha1($str);
+    }
+
+    //关联公司信息
+    public function linkCompany()
+    {
+        return $this->belongsTo('Company','cid');
     }
 }

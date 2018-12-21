@@ -1,5 +1,5 @@
 ﻿{extend name="base"}
-{block name="title"}后台登录--管理员{/block}
+{block name="title"}后台登录-公司{/block}
 
 {block name="style"}
 <link href="/static/h-ui.admin/css/H-ui.login.css" rel="stylesheet" type="text/css" />
@@ -22,7 +22,7 @@
 {block name="content"}
 <input type="hidden" id="TenantId" name="TenantId" value="" />
 <div class="header-title">
-  <span>员工管理系统-管理员登录</span>
+  <span>员工管理系统-公司端登录</span>
 </div>
 <div class="loginWraper">
   <div id="loginform" class="loginBox">
@@ -46,7 +46,7 @@
       </div>
       <div class="row cl">
         <div class="formControls col-xs-8 col-xs-offset-3">
-          <a href="{:url('companyLogin')}">公司用户登录</a>
+            <a href="{:url('login')}">管理员登录</a>
         </div>
       </div>
       <div class="row cl">

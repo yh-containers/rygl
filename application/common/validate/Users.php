@@ -18,6 +18,8 @@ class Users extends Validate
         'password.min'         => '密码字符长度不得低于 :rule 位',
 
         'verify.require'       => '验证码必须输入',
+
+        'account.require'       => '帐号必须输入'
     ];
 
     //api注册
@@ -26,6 +28,15 @@ class Users extends Validate
         return $this->only(['phone','password','verify'])
             ->append('verify','require|checkSms:1')
             ;
+    }
+
+    //后台登录验证
+    public function sceneAdmin_login()
+    {
+        return $this->only(['account','password'])
+            ->remove('account','require')
+            ;
+
     }
 
     //验证帐号唯一

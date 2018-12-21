@@ -6,8 +6,13 @@ use think\Controller;
 class Common extends Controller
 {
     const VALIDATE_SCENE = 'admin_add';
+
     //当前登录者用户id
     protected $admin_id = 0;
+
+    //是否是系统管理员登录
+    protected $is_admin = false;
+
     //是否需要认证
     protected $is_need_auth = true;
 
@@ -21,6 +26,7 @@ class Common extends Controller
     {
         if(session('?admin_info')){
             $this->admin_id = session('admin_info.admin_id');
+            $this->is_admin = (bool)session('admin_info.is_admin'); //是否是管理员登录
         }
 
         if($this->is_need_auth===true){
@@ -35,5 +41,10 @@ class Common extends Controller
                 }
             }
         }
+
+        //绑定容器
+        bind('current_login_is_admin',function(){
+            return $this->is_admin;
+        });
     }
 }

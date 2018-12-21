@@ -32,7 +32,7 @@ class Admin extends Base
     }
 
 
-    //处理登录
+    //处理登录--管理员登录
     public function handleLogin($input_data)
     {
         $validate = new \app\common\validate\Admin();
@@ -60,18 +60,56 @@ class Admin extends Base
         $user_info->login_ip = request()->ip();
         $user_info->save();
 
-        //登录成功
-        session('admin_info',[
-            'admin_id' => $user_info['id'],
-            'admin_name' => $user_info['name'],
-            'admin_role_name' => $role_info['name'],
-        ]);
-
+        //登录成功--生成登录凭证
+        $this->_generateLoginInfo($user_info['id'],$user_info['name'],$role_info['name'],1);
         return [true,'登录成功'];
     }
 
+    //公司登录
+    public function handleCompanyLogin($input_data)
+    {
+        $validate = new \app\common\validate\Users();
+        $validate->scene('admin_login');//用户登录后台场景
 
+        if(!$validate->check($input_data)){
+            return [false,$validate->getError()];
+        }
 
+        $account = $input_data['account'];
+        $password = $input_data['password'];
+        $user_model = new \app\common\model\Users();
+        //验证用户信息
+        try{
+            $user_info = $user_model->checkInfo($account,$password);
+            //获取公司信息
+            $company_info = $user_info->linkCompany;
+            if(empty($company_info)){
+                return [false,'请先加入公司后登录'];
+            }
+            //登录成功--生成登录凭证
+            $this->_generateLoginInfo($user_info['id'],$user_info['name'],$company_info['name']);
+            return [true,'登录成功'];
+        }catch (\Exception $e) {
+            return [false,$e->getMessage()];
+        }
+    }
+
+    /*
+     * 生成登录信息
+     * @param $id int 当前登录者id
+     * @param $name string 登录者名称
+     * @param $ind_name 登录者身份
+     * @param $is_admin 是否是管理员登录
+     * */
+    private function _generateLoginInfo($id,$name,$ind_name,$is_admin=0)
+    {
+        session('admin_info',[
+            'admin_id' => $id,
+            'admin_name' => $name,
+            'admin_role_name' => $ind_name,
+            'is_admin' => $is_admin,
+        ]);
+    }
 
 
     //关联角色

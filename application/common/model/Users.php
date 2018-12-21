@@ -74,13 +74,54 @@ class Users extends Base
 
     }
 
+    /*
+     * 特殊操作特殊处理-
+     * 此处不包含-用户的基本动作 例：修改用户名、头像、手机号.......
+     * 获取用户可以操作的栏目
+     * c_company     创建公司
+     * j_company     加入公司
+     *
+     *
+     * c_n_opt       加入公司后 常规操作--签到(sign)--请假()--调休..查看公司信息......
+     * c_name        调整公司名
+     * c_work_time   调整作息时间
+     *
+     * auth_name     实名认证
+     * */
+    public function getOptMenu()
+    {
+        $menu = [];
+        //操作栏目
+        if($this->cid) { //已在公司
+            array_push($menu,'c_n_opt');
+
+            //加入公司后可以操作的菜单
+            $company_info = model('Company')->find($this->cid);
+
+            if($company_info['uid']==$this->id){ //判断是否是创始人
+                array_push($menu,'c_c_name','c_name','c_work_time');
+            }
+
+
+        }else{
+            array_push($menu,'c_company','j_company');
+        }
+
+        //判断用户是否实名
+        $this->is_auth !=1 && array_push($menu,'auth_name');
+
+        return $menu;
+    }
+
+
     //处理用户登录凭证
     protected function handleLoginInfo()
     {
         $data = [
-            'user_id'   =>  $this->id,  //用户id
-            'cid'       =>  $this->cid, //公司id
-            'name'      =>  $this->name,
+            'user_id'   =>  $this->id,      //用户id
+            'cid'       =>  $this->cid,     //公司id
+            'name'      =>  $this->name,    //用户名
+            'opt_menu'  =>  [],             //用户可以操作的栏目
             'time'      => time()
         ];
 

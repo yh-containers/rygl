@@ -42,6 +42,10 @@ class Sms extends Base
         } elseif ($exp_time && $info['create_time']+$exp_time < time()) {
             return [false, '验证码已过期'];
         } else {
+            //修改验证码为已使用
+            $info->status=2;
+            $info->use_time= time();
+            $info->save();
             return [true, ''];
         }
 

@@ -78,7 +78,8 @@ class Users extends Base
     protected function handleLoginInfo()
     {
         $data = [
-            'user_id'   =>  $this->id,
+            'user_id'   =>  $this->id,  //用户id
+            'cid'       =>  $this->cid, //公司id
             'name'      =>  $this->name,
             'time'      => time()
         ];

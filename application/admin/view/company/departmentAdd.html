@@ -7,6 +7,7 @@
 <article class="page-container">
 	<form class="layui-form" action="">
 		<input type="hidden" name="id" value="{$model['id']}"/>
+		<input type="hidden" name="cid" value="{$model['cid']|default=$cid}"/>
 		<div class="layui-form-item">
 			<label class="layui-form-label">部门名称</label>
 			<div class="layui-input-block">
@@ -27,6 +28,7 @@
 				<button class="layui-btn" type="button" onclick="$.common.submit($(this).parents('form'))">立即提交</button>
 			</div>
 		</div>
+
 	</form>
 </article>
 

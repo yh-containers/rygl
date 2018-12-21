@@ -1,9 +1,9 @@
 <?php
 namespace app\admin\controller;
 
-
 class Company extends Common
 {
+    //公司列表
     public function index()
     {
 
@@ -17,9 +17,7 @@ class Company extends Common
         ]);
     }
 
-    /*
-     * 管理员--添加
-     * */
+    //公司操作-新增、编辑
     public function companyAdd()
     {
         $id = $this->request->param('id',0,'intval');
@@ -37,32 +35,37 @@ class Company extends Common
         ]);
     }
 
+    //删除公司
     public function companyDel()
     {
         $id = $this->request->param('id',0,'intval');
         $model = new \app\common\model\Company();
-        return $model::destroy($id);
+        return $model->actionDel($id);
     }
 
+    //部门列表
     public function department()
     {
 
         $keyword = request()->get('keyword');
+        $cid = $this->request->param('cid',0,'intval');
         $model = new \app\common\model\Department();
         $list = $model->wherelike('name',"%".$keyword."%")->paginate();
         return view('department',[
             'list' => $list,
             'page' => $list->render(),
             'count'=> count($list),
+            'cid'=>$cid
         ]);
     }
 
     /*
-     * 管理员--添加
+     * 部门操作-新增、编辑
      * */
     public function departmentAdd()
     {
         $id = $this->request->param('id',0,'intval');
+        $cid = $this->request->param('cid',0,'intval');
         $model = new \app\common\model\Department();
         if($this->request->isAjax()) {
             $validate = new \app\common\validate\Department();
@@ -73,14 +76,16 @@ class Company extends Common
         }
         $model = $model->find($id);
         return view('departmentAdd',[
-            'model' => $model
+            'model' => $model,
+            'cid'=>$cid
         ]);
     }
 
+    //删除部门
     public function departmentDel()
     {
         $id = $this->request->param('id',0,'intval');
         $model = new \app\common\model\Department();
-        return $model::destroy($id);
+        return $model->actionDel($id);
     }
 }

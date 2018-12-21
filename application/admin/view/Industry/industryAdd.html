@@ -15,27 +15,6 @@
 		</div>
 
 		<div class="layui-form-item">
-			<label class="layui-form-label">行业地址</label>
-			<div class="layui-input-block">
-				<input type="text" name="address" value="{$model['address']}"  placeholder="行业地址" class="layui-input">
-			</div>
-		</div>
-
-		<div class="layui-form-item">
-			<label class="layui-form-label">LOGO地址</label>
-			<div class="layui-input-block">
-				<input type="text" name="logo" value="{$model['logo']}"  placeholder="LOGO地址" class="layui-input">
-			</div>
-		</div>
-
-		<div class="layui-form-item">
-			<label class="layui-form-label">官网地址</label>
-			<div class="layui-input-block">
-				<input type="text" name="website" value="{$model['website']}"  placeholder="官网地址" class="layui-input">
-			</div>
-		</div>
-
-		<div class="layui-form-item">
 			<label class="layui-form-label">状态</label>
 			<div class="layui-input-block">
 				<input type="radio" name="status" value="1" {:empty($model)?'checked':($model['status']===1?'checked':'')} title="正常">

@@ -19,7 +19,10 @@ class Users extends Validate
 
         'verify.require'       => '验证码必须输入',
 
-        'account.require'       => '帐号必须输入'
+        'account.require'       => '帐号必须输入',
+
+        'captcha.require'        => '验证码必须输入',
+        'captcha.captcha'        => '验证码错误',
     ];
 
     //api注册
@@ -33,7 +36,8 @@ class Users extends Validate
     //后台登录验证
     public function sceneAdmin_login()
     {
-        return $this->only(['account','password'])
+        return $this->only(['account','password','captcha'])
+            ->append('captcha|验证码','require|captcha')
             ->remove('account','require')
             ;
 

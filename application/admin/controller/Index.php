@@ -4,7 +4,7 @@ namespace app\admin\controller;
 
 class Index extends Common
 {
-    protected $ignore_auth = 'login,companyLogin';
+    protected $ignore_auth = 'login,companyLogin,verify';
 
 
     public function index()
@@ -22,6 +22,15 @@ class Index extends Common
 
         ]);
     }
+
+    /*
+     * 验证码
+     * */
+    public function verify()
+    {
+        return view('verify');
+    }
+
 
     /*
      * 用户登录--管理员登录
@@ -76,6 +85,7 @@ class Index extends Common
     {
         // 清除session（当前作用域）
         session(null);
-        $this->redirect('index/login');
+        $url = $this->is_admin?'index/login':'index/companylogin';
+        $this->redirect($url);
     }
 }

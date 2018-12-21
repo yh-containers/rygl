@@ -37,7 +37,7 @@ class Common extends Controller
                 if($this->request->isAjax()){
                     abort(403,json_encode(['code'=>0,'msg'=>'请先登录']));
                 }else{
-                    $this->error('请先登录','index/login');
+                    $this->error('请先登录',$this->is_admin?'index/login':'index/companylogin');
                 }
             }
         }

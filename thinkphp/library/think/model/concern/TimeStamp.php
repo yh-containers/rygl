@@ -69,7 +69,6 @@ trait TimeStamp
             $dateTime = new DateTime($time);
         }
 
-//        return $dateTime->format($format . (strpos($format, 'u') ? '' : '.u'));
         return $dateTime->format($format);
     }
 

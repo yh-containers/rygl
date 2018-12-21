@@ -19,6 +19,9 @@ class Admin extends Validate
         'name.require'           => '用户名必须输入',
         'password.require'       => '密码必须输入',
         'password.min'           => '密码长度必须超过 :rule 位',
+
+        'captcha.require'        => '验证码必须输入',
+        'captcha.captcha'        => '验证码错误',
     ];
 
 
@@ -29,8 +32,9 @@ class Admin extends Validate
     //登录场景
     public function sceneLogin()
     {
-        return $this->only(['account','password'])
+        return $this->only(['account','password','captcha'])
             ->append('password','require')
+            ->append('captcha|验证码','require|captcha')
             ->remove('account','checkUnique')
             ;
     }

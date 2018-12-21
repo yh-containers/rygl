@@ -31,7 +31,7 @@ class Admin extends Validate
     {
         return $this->only(['account','password'])
             ->append('password','require')
-            ->remove('account','unique')
+            ->remove('account','checkUnique')
             ;
     }
 

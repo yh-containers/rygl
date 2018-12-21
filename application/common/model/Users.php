@@ -117,11 +117,13 @@ class Users extends Base
     //处理用户登录凭证
     protected function handleLoginInfo()
     {
+        $opt_menu = $this->getOptMenu();
+        $opt_menu = json_encode($opt_menu);
         $data = [
             'user_id'   =>  $this->id,      //用户id
             'cid'       =>  $this->cid,     //公司id
             'name'      =>  $this->name,    //用户名
-            'opt_menu'  =>  [],             //用户可以操作的栏目
+            'opt_menu'  =>  $opt_menu,             //用户可以操作的栏目
             'time'      => time()
         ];
 

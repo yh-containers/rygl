@@ -2,12 +2,9 @@
 namespace app\common\validate;
 
 use think\Validate;
-use think\model\concern\SoftDelete;
 
 class Industry extends Validate
 {
-    use SoftDelete;
-    protected $deleteTime = 'delete_time';
 
     protected $rule = [
         'name'          => 'require',

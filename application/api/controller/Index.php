@@ -8,3 +8,4 @@ class Index extends Common
         return jsonOut('获取成功',1,['foo'=>'abc']);
     }
 }
+

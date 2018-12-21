@@ -1,0 +1,46 @@
+﻿{extend name="base"}
+{block name="title"}部门列表{/block}
+
+{block name="crumb"}首页,部门管理,部门列表{/block}
+
+{block name="content"}
+
+<div class="page-container">
+	<div class="cl pd-5 bg-1 bk-gray mt-20">
+		<span class="l">
+			<a href="{:url('departmentAdd',['cid'=>1])}" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加部门</a>
+		</span>
+	</div>
+	<div class="mt-20">
+		<table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+			<thead>
+			<tr class="text-c">
+				<th width="80">ID</th>
+				<th>部门</th>
+				<th width="120">状态</th>
+				<th width="120">操作</th>
+			</tr>
+			</thead>
+			<tbody>
+			{volist name="list" id="vo"}
+			<tr class="text-c">
+				<td>{$i}</td>
+				<td>{$vo['name']}</td>
+				<td class="td-status">{:$vo::$fields_status[$vo['status']]}</td>
+				<td class="f-14 td-manage">
+					<a href="{:url('departmentAdd',['id'=>$vo['id']])}">编辑</a>
+					<a href="javascript:;"
+					   onclick="$.common.del(this,'{:url('departmentDel')}',{'id':{:$vo['id']},'type':1})"
+					   data-id="{$vo['id']}">
+						删除
+					</a>
+				</td>
+			</tr>
+			{/volist}
+		</table>
+	</div>
+</div>
+
+{$page|raw}
+
+{/block}

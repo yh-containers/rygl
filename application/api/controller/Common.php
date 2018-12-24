@@ -14,8 +14,11 @@ class Common
      * @var \think\Request
      */
     protected $request;
-
+    //
     protected $user_id=0;
+    //公司id
+    protected $company_id = 0;
+
 
     /*
      * 否需要登录
@@ -33,6 +36,7 @@ class Common
         $this->app = $app?:Container::get('app');
         $this->request = $this->app['request'];
         $this->user_id = $this->request->middleware_user_id; //中间件处理返回用户id
+        $this->company_id = $this->request->middleware_company_id; //中间件处理返回用户id
 
         if($this->is_need_auth===true){
             //当前动作

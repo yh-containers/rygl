@@ -172,3 +172,27 @@ function go_curl($url, $type='GET', $data = false, &$err_msg = null, $timeout = 
     }
     return $response;
 }
+
+
+/*
+ * 数据
+ * */
+function handle_data_day($arr,$field,$format='Y-m-d'){
+    $data = [];
+    foreach ($arr as $vo) {
+        $date = date($format,$vo[$field]);
+        if(array_key_exists($date, $data)) {
+            $data[$date]['data'][] = $vo;
+        }else{
+            $data[$date] = [
+                'date' => $date,
+                'data' => [$vo]
+            ];
+        }
+    }
+    return array_values($data);
+}
+
+
+
+

@@ -3,6 +3,9 @@ namespace app\common\model;
 
 class UserSignIn extends Base
 {
+    //间隔多长时间后才能再次操作打卡
+    const SIGN_SPACE_TIME = 10;
+
     protected $name = 'user_sign_in';
     public static $fields_status = ['','上班','下班'];
     public static $fields_nss = ['正常','迟到','早退'];
@@ -28,6 +31,14 @@ class UserSignIn extends Base
         empty($input_data['mac']) && abort(40001,'参数异常');
         $mac = $input_data['mac'];
 
+        $user_info = $this->where('uid',$user_id)->order('id','desc')->find();
+
+        //距离上次打卡必须超过
+        if(!empty($user_info) && self::$current_time-$user_info['s_time']<=self::SIGN_SPACE_TIME){
+            abort(40001,'打卡间隔时间必须超过'.self::SIGN_SPACE_TIME.'秒');
+        }
+
+
         //获取公司打卡时间规则
         $company_model = model('Company')->where('id',$cid)->find();
         $work_time = $company_model['work_time'];
@@ -35,8 +46,6 @@ class UserSignIn extends Base
         if(!empty($sign_mac) && $sign_mac!=$mac) {
             abort(40001,'请链接公司wifi进行打卡');
         }
-
-        $user_info = $this->where('uid',$user_id)->order('id','desc')->find();
 
 
         $s_day = date('Y-m-d',$user_info['s_time']);
@@ -46,6 +55,9 @@ class UserSignIn extends Base
         }else{
             //已打过卡
             $times = $user_info['times']+1;
+            if($times>2) {
+                abort(40001,'一天只能打两次卡');
+            }
             list($bool,$status,$nsm,$nss) = $this->createSign($user_id,$cid,$mac,$work_time,$times);
         }
 
@@ -55,20 +67,29 @@ class UserSignIn extends Base
 
     /*
      * 打卡记录
-     * @param $user_id int 用户id
      * @param $company_id int 公司id
      * @param $mix_time string  2018-12-24|24/按天  2018-12/按月
+     * @param $user_id int 用户id
      * */
-    public function records($user_id,$company_id,$mix_time)
+    public function records($company_id,$mix_time,$user_id=0)
     {
+        $where[] =['cid','=',$company_id];
         $count_times=substr_count($mix_time,'-');
+
+        $model = $this->where($where);
         if($count_times==1){ //按月
+            $start_time = $mix_time.'-1';
+            $end_time = strtotime('+1 month',strtotime($start_time));
+            $model->whereBetween('s_time',$start_time.','.$end_time);
 
         }else{//按天
-
+            $start_time = $mix_time;
+            $end_time = strtotime('+1 day',strtotime($start_time));
+            $model->whereBetween('s_time',$start_time.','.$end_time);
         }
-
-
+        $user_id && $where[] =['uid','=',$user_id];
+        $result = $model->order('id','asc')->select();
+        return $result;
 
 //        $this->
     }

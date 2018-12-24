@@ -68,4 +68,24 @@ class User extends Common
         ] ;
         return jsonOut($msg,(int)$bool,$bool?$data:[]);
     }
+
+    //用户签到记录
+    public function records()
+    {
+
+        $year = $this->request->param('year',date('Y'),'intval');
+        $month = $this->request->param('month',date('m'),'intval');
+        $day = $this->request->param('day',0,'intval');
+        $user_id = $this->request->param('user_id',$this->user_id,'intval');
+
+        $query_day = $day<=0 ? ($year.'-'.$month) :( $year.'-'.$month.'-'.$day);
+        $model =  new \app\common\model\UserSignIn();
+        $list = $model->records($this->company_id,$query_day,$user_id);
+        $need_fields = ['s_time'=>0,'times'=>0,'status'=>0,'nss'=>0,'nsm'=>0];
+        $list = filter_data($list,$need_fields,2);
+        $list = handle_data_day($list,'s_time');
+        return jsonOut('获取成功',1,$list);
+
+
+    }
 }

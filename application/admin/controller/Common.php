@@ -9,6 +9,8 @@ class Common extends Controller
 
     //当前登录者用户id
     protected $admin_id = 0;
+    //公司id
+    protected $com_id = 0;
 
     //是否是系统管理员登录
     protected $is_admin = false;
@@ -27,6 +29,7 @@ class Common extends Controller
         if(session('?admin_info')){
             $this->admin_id = session('admin_info.admin_id');
             $this->is_admin = (bool)session('admin_info.is_admin'); //是否是管理员登录
+            $this->com_id = (bool)session('admin_info.com_id'); //公司id
         }
 
         if($this->is_need_auth===true){

@@ -59,13 +59,13 @@ class User extends Common
     {
         $input_data = $this->request->param();
         $model =  new \app\common\model\UserSignIn();
-        list($bool,$msg,$time,$nsm,$nss) = $model->sign($this->user_id,$this->company_id,$input_data);
+        list($bool,$msg,$time,$status,$nsm,$nss) = $model->sign($this->user_id,$this->company_id,$input_data);
         $data =[
             'sign_time' =>date('Y-m-d H:i:s',$time),
+            'status' => $status, //签到状态 1上班 2下班
             'nsm' => $nsm, //误差时间
             'nss' => $nss, //打卡状态 0正常 1迟到 2早退
         ] ;
-        $data['sing_time'] = date('Y-m-d H:i:s',$time);
-        return jsonOut($msg,(int)$bool,$bool?date('Y-m-d H:i:s',$time):'');
+        return jsonOut($msg,(int)$bool,$bool?$data:[]);
     }
 }

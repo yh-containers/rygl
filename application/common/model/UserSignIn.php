@@ -42,15 +42,15 @@ class UserSignIn extends Base
         $s_day = date('Y-m-d',$user_info['s_time']);
         if(empty($user_info) || self::$current_day != $s_day){
             //今天未打卡
-            list($bool,$nsm,$nss) = $this->createSign($user_id,$cid,$mac,$work_time);
+            list($bool,$status,$nsm,$nss) = $this->createSign($user_id,$cid,$mac,$work_time);
         }else{
             //已打过卡
             $times = $user_info['times']+1;
-            list($bool,$nsm,$nss) = $this->createSign($user_id,$cid,$mac,$work_time,$times);
+            list($bool,$status,$nsm,$nss) = $this->createSign($user_id,$cid,$mac,$work_time,$times);
         }
 
 
-        return [$bool,$bool?'打卡成功':'打卡异常',self::$current_time,$nsm,$nss];
+        return [$bool,$bool?'打卡成功':'打卡异常',self::$current_time,$status,$nsm,$nss];
     }
 
     /*
@@ -126,6 +126,6 @@ class UserSignIn extends Base
         ];
 
         $bool = $this->save($data);
-        return [$bool, $nsm, $nss];
+        return [$bool, $status,$nsm, $nss];
     }
 }

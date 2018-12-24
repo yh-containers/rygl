@@ -8,24 +8,30 @@ class CompanySys extends Common
     {
 
 
-//        $idPServerAuthUri="https://sso.szftedu.cn/connect/authorize";
-//        $clientId='af0af206b6d943faa278a504cf34eef8';
-//        $response_type=$this->request->param('response_type','code');
-//        $redirectUri='https://ddz.szftedu.cn/';
-//        $scope='openid';
-////        $state=uniqid();
-////        $redirectUri = urlencode($redirectUri);
-//        $state = session_id();
-////        dump(session_id());exit;
-//        $url = $idPServerAuthUri . "?client_id=" . $clientId ."&response_type=" . $response_type ."&redirect_uri=" . $redirectUri."&scope=" . $scope . "&state=" . $state;
+        $idPServerAuthUri="https://sso.szftedu.cn/connect/authorize";
+        $clientId='af0af206b6d943faa278a504cf34eef8';
+        $response_type=$this->request->param('response_type','code');
+        $redirectUri='https://ddz.szftedu.cn/';
+        $scope='openid';
+//        $state=uniqid();
+//        $redirectUri = urlencode($redirectUri);
+        $state = 'abcdefs';
+//        dump(session_id());exit;
+        $url = $idPServerAuthUri . "?client_id=" . $clientId ."&response_type=" . $response_type ."&redirect_uri=" . $redirectUri."&scope=" . $scope . "&state=" . $state;
+        $serialize_data = ['state'=>$state];
+//        $serialize_data = json_encode(['state'=>$state]);
+//        dump($serialize_data);
+        $serialize = serialize($serialize_data);
+//        dump($serialize);
+        cookie('TempCookie',$serialize);
 //        dump($url);exit;
-//        if($response_type=='code'){
-//            $url=$idPServerAuthUri."?client_id=".$clientId."&response_type=".$response_type. "&returnUrl=".$redirectUri."&scope=".$scope."&state=".$state;
-//            request()->withHeader(['TempCookie'=>$state]);
-//            $this->redirect($url);
-//        }else{
-//            dump($response_type);exit;
-//        }
+        if($response_type=='code'){
+            $url=$idPServerAuthUri."?client_id=".$clientId."&response_type=".$response_type. "&returnUrl=".$redirectUri."&scope=".$scope."&state=".$state;
+            request()->withHeader(['TempCookie'=>$state]);
+            $this->redirect($url);
+        }else{
+            dump($response_type);exit;
+        }
 
 //        echo $url;
 //        dump(file_get_contents($url));exit;

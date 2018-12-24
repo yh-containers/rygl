@@ -57,7 +57,9 @@ class User extends Common
     //用户打卡
     public function sign()
     {
-        $model =  new \app\common\model\Users();
-        list($bool,$msg) = $model->sign($this->user_id);
+        $input_data = $this->request->param();
+        $model =  new \app\common\model\UserSignIn();
+        list($bool,$msg,$time) = $model->sign($this->user_id,$this->company_id,$input_data);
+        return jsonOut($msg,(int)$bool,$bool?date('Y-m-d H:i:s',$time):'');
     }
 }

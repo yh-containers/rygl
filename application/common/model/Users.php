@@ -154,7 +154,7 @@ class Users extends Base
         $json_token = json_encode($data);
         return base64_encode($json_token).'.'.$sign;
     }
-    
+
     //token验证
     public static function tokenDecrypt($token)
     {

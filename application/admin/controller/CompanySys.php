@@ -6,34 +6,16 @@ class CompanySys extends Common
     //签到设置
     public function setting()
     {
-
-
-//        $idPServerAuthUri="https://sso.szftedu.cn/connect/authorize";
-//        $clientId='af0af206b6d943faa278a504cf34eef8';
-//        $response_type=$this->request->param('response_type','code');
-//        $redirectUri='https://ddz.szftedu.cn/';
-//        $scope='openid';
-////        $state=uniqid();
-////        $redirectUri = urlencode($redirectUri);
-//        $state = session_id();
-////        dump(session_id());exit;
-//        $url = $idPServerAuthUri . "?client_id=" . $clientId ."&response_type=" . $response_type ."&redirect_uri=" . $redirectUri."&scope=" . $scope . "&state=" . $state;
-//        dump($url);exit;
-//        if($response_type=='code'){
-//            $url=$idPServerAuthUri."?client_id=".$clientId."&response_type=".$response_type. "&returnUrl=".$redirectUri."&scope=".$scope."&state=".$state;
-//            request()->withHeader(['TempCookie'=>$state]);
-//            $this->redirect($url);
-//        }else{
-//            dump($response_type);exit;
-//        }
-
-//        echo $url;
-//        dump(file_get_contents($url));exit;
-
         $model = new \app\common\model\Company();
         $model = $model->find($this->com_id);
+        $work_time = $model['work_time'];
+        //上班时间规则
+        $set_work_time = \app\common\model\Company::getWorkTime();
+
         return view('setting',[
-            'model'=>$model
+            'model'=>$model,
+            'set_work_time'=>$set_work_time,
+            'work_time' => $work_time
         ]);
     }
 
@@ -45,6 +27,19 @@ class CompanySys extends Common
         $model = new \app\common\model\Company();
         list($state,$msg) = $model->setMacSign($this->com_id,$sign_mac);
 
+        return ['code'=>(int)$state,'msg'=>$msg];
+    }
+
+    //设置工作时间
+    public function workTimeAction()
+    {
+        $am = $this->request->param('am','0','intval');
+        $am_str = implode(':',$am);
+        $pm = $this->request->param('pm','0','intval');
+        $pm_str = implode(':',$pm);
+
+        $model = new \app\common\model\Company();
+        list($state,$msg) =  $model->setWorkTime($this->com_id,$am_str,$pm_str);
         return ['code'=>(int)$state,'msg'=>$msg];
     }
 }

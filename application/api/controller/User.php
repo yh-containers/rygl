@@ -57,7 +57,15 @@ class User extends Common
     //用户打卡
     public function sign()
     {
-        $model =  new \app\common\model\Users();
-        list($bool,$msg) = $model->sign($this->user_id);
+        $input_data = $this->request->param();
+        $model =  new \app\common\model\UserSignIn();
+        list($bool,$msg,$time,$nsm,$nss) = $model->sign($this->user_id,$this->company_id,$input_data);
+        $data =[
+            'sign_time' =>date('Y-m-d H:i:s',$time),
+            'nsm' => $nsm, //误差时间
+            'nss' => $nss, //打卡状态 0正常 1迟到 2早退
+        ] ;
+        $data['sing_time'] = date('Y-m-d H:i:s',$time);
+        return jsonOut($msg,(int)$bool,$bool?date('Y-m-d H:i:s',$time):'');
     }
 }

@@ -4,6 +4,8 @@ namespace app\common\model;
 class UserSignIn extends Base
 {
     protected $name = 'user_sign_in';
+    public static $fields_status = ['','上班','下班'];
+    public static $fields_nss = ['正常','迟到','早退'];
     //今日时间(Y-m-d)
     public static $current_day;
     //当前时间戳
@@ -16,6 +18,7 @@ class UserSignIn extends Base
         self::$current_time = time();
     }
 
+
     /*
      * 用户签到
      * */
@@ -25,24 +28,29 @@ class UserSignIn extends Base
         empty($input_data['mac']) && abort(40001,'参数异常');
         $mac = $input_data['mac'];
 
-        $user_info = $this->where('uid',$user_id)->order('id','desc')->find();
-
-        if(empty($user_info)) {
-            $bool = $this->createSign($user_id,$cid,$mac);
-
-        }else{
-            $s_day = date('Y-m-d',$user_info['s_time']);
-            if(self::$current_day == $s_day){
-                //已打过卡
-                $times = $user_info['times']+1;
-                $bool = $this->createSign($user_id,$cid,$mac,$times);
-            }else{
-                //今天未打卡
-                $bool = $this->createSign($user_id,$cid,$mac);
-            }
+        //获取公司打卡时间规则
+        $company_model = model('Company')->where('id',$cid)->find();
+        $work_time = $company_model['work_time'];
+        $sign_mac = $company_model['sign_mac'];
+        if(!empty($sign_mac) && $sign_mac!=$mac) {
+            abort(40001,'请链接公司wifi进行打卡');
         }
 
-        return [$bool,$bool?'打卡成功':'打卡异常',self::$current_time];
+        $user_info = $this->where('uid',$user_id)->order('id','desc')->find();
+
+
+        $s_day = date('Y-m-d',$user_info['s_time']);
+        if(empty($user_info) || self::$current_day != $s_day){
+            //今天未打卡
+            list($bool,$nsm,$nss) = $this->createSign($user_id,$cid,$mac,$work_time);
+        }else{
+            //已打过卡
+            $times = $user_info['times']+1;
+            list($bool,$nsm,$nss) = $this->createSign($user_id,$cid,$mac,$work_time,$times);
+        }
+
+
+        return [$bool,$bool?'打卡成功':'打卡异常',self::$current_time,$nsm,$nss];
     }
 
     /*
@@ -73,16 +81,51 @@ class UserSignIn extends Base
      * @param $mac 打卡条件
      * @param $times 打卡次数
      * */
-    protected function createSign($user_id,$cid,$mac='',$times=1)
+    protected function createSign($user_id,$cid,$mac='',$work_time,$times=1)
     {
+        $status = 1; //上班卡
+        $nsm = 0; //非正常打卡时间范围
+        $nss = 0; //非正常卡 0 正常 1迟到 2早退
+        if($times>1) { //下班卡
+            $status = 2;
+        }
+
+        if(!empty($work_time)) {
+            if($status==1) { //上班
+                $am_time = implode(':',$work_time[0]);
+                $am_time = strtotime($am_time);
+                $nsm_time = self::$current_time - $am_time ;//误差时间
+                if($nsm_time > 60){
+                    $nsm = intval($nsm_time/60);
+                    $nss = 1;
+                }
+            }else{//下班
+                $pm_time = implode(':',$work_time[1]);
+                $pm_time = strtotime($pm_time);
+                $nsm_time = $pm_time - self::$current_time    ;//误差时间
+                if($nsm_time > 60){
+                    $nsm = intval($nsm_time/60);
+                    $nss = 2;
+                }
+            }
+        }
+
+
+
+
         //可直接打卡
         $data = [
             'cid'=>$cid,
             'uid'=>$user_id,
             'mac'=>$mac,
             'times'=>$times,
+            'status'=>$status,
+            'nss'=>$nss,
+            'nsm'=>$nsm,
             's_time'=>self::$current_time,
         ];
-        return $this->save($data);
+
+        $bool = $this->save($data);
+        return [$bool, $nsm, $nss];
     }
 }

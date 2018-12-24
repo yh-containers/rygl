@@ -28,7 +28,57 @@
 			</div>
 		</div>
 		<div class="col-xs-8">
+			<div class="panel panel-default">
+				<div class="panel-header">
+					工作时间设置
+					<div class="clearfix r">
+						<a href="JavaScript:;" onclick="$.common.submit($(this).parent().parent().next().find('form'))" class="btn btn-warning radius size-MINI" >保存</a>
+					</div>
+				</div>
+				<div class="panel-body">
+					<form class="layui-form" action="{:url('workTimeAction')}">
+						<div class="layui-form-item">
+							<label class="layui-form-label">上班时间</label>
+							<div class="layui-input-inline" style="width: 100px;">
+								<select name="am[]">
+									{volist name="set_work_time['am'][0]" id="vo"}
+									<option value="{$vo}" {:isset($work_time[0])?($work_time[0][0]==$vo?'selected':''):''}>{$vo}</option>
+									{/volist}
+								</select>
+							</div>
+							<div class="layui-form-mid">点</div>
+							<div class="layui-input-inline" style="width: 100px;">
+								<select name="am[]">
+									{volist name="set_work_time['am'][1]" id="vo"}
+									<option value="{$vo}"  {:isset($work_time[0])?($work_time[0][1]==$vo?'selected':''):''}>{$vo}</option>
+									{/volist}
+								</select>
+							</div>
+							<div class="layui-form-mid">分</div>
+						</div>
+						<div class="layui-form-item">
+							<label class="layui-form-label">下班时间</label>
+							<div class="layui-input-inline" style="width: 100px;">
+								<select name="pm[]">
+									{volist name="set_work_time['pm'][0]" id="vo"}
+									<option value="{$vo}" {:isset($work_time[1])?($work_time[1][0]==$vo?'selected':''):''}>{$vo}</option>
+									{/volist}
+								</select>
+							</div>
+							<div class="layui-form-mid">点</div>
+							<div class="layui-input-inline" style="width: 100px;">
+								<select name="pm[]">
+									{volist name="set_work_time['pm'][1]" id="vo"}
+									<option value="{$vo}" {:isset($work_time[1])?($work_time[1][1]==$vo?'selected':''):''}>{$vo}</option>
+									{/volist}
+								</select>
+							</div>
+							<div class="layui-form-mid">分</div>
+						</div>
 
+					</form>
+				</div>
+			</div>
 		</div>
 	</div>
 

@@ -53,4 +53,11 @@ class User extends Common
         $token = $model->refreshToken($this->user_id);
         return jsonOut('获取成功',1,$token);
     }
+
+    //用户打卡
+    public function sign()
+    {
+        $model =  new \app\common\model\Users();
+        list($bool,$msg) = $model->sign($this->user_id);
+    }
 }

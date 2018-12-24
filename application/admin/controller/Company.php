@@ -88,4 +88,16 @@ class Company extends Common
         $model = new \app\common\model\Department();
         return $model->actionDel($id);
     }
+
+    //公司员工列表
+    public function users()
+    {
+        $model = new \app\common\model\Users();
+        $list = $model->where('cid','=',session('admin_info.company_id'))->paginate();
+        return view('users',[
+            'list' => $list,
+            'page' => $list->render(),
+            'count'=> count($list),
+        ]);
+    }
 }

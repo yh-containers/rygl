@@ -87,7 +87,7 @@ class Admin extends Base
                 return [false,'请先加入公司后登录'];
             }
             //登录成功--生成登录凭证
-            $this->_generateLoginInfo($user_info['id'],$user_info['name'],$company_info['name']);
+            $this->_generateLoginInfo($user_info['id'],$user_info['name'],$company_info['name'],0,$company_info['id']);
             return [true,'登录成功'];
         }catch (\Exception $e) {
             return [false,$e->getMessage()];
@@ -100,14 +100,16 @@ class Admin extends Base
      * @param $name string 登录者名称
      * @param $ind_name 登录者身份
      * @param $is_admin 是否是管理员登录
+     * @param $com_id int 公司id
      * */
-    private function _generateLoginInfo($id,$name,$ind_name,$is_admin=0)
+    private function _generateLoginInfo($id,$name,$ind_name,$is_admin=0,$com_id=0)
     {
         session('admin_info',[
             'admin_id' => $id,
             'admin_name' => $name,
             'admin_role_name' => $ind_name,
             'is_admin' => $is_admin,
+            'com_id' => $com_id,
         ]);
     }
 

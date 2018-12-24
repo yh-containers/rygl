@@ -1,11 +1,13 @@
 <?php
 namespace app\common\model;
 
+use app\common\model\traits\UserFlowLeave;
+use app\common\model\traits\UserFlowWork;
 use think\model\concern\SoftDelete;
 
 class Users extends Base
 {
-    use SoftDelete;
+    use SoftDelete,UserFlowLeave,UserFlowWork;
 
     protected $name = 'users';
 
@@ -152,7 +154,7 @@ class Users extends Base
         $json_token = json_encode($data);
         return base64_encode($json_token).'.'.$sign;
     }
-
+    
     //token验证
     public static function tokenDecrypt($token)
     {
@@ -181,7 +183,7 @@ class Users extends Base
     public static function handleSign(array $data)
     {
         //忽略字段
-        unset($data['opt_menu']);
+        if(!empty($data['opt_menu'])) unset($data['opt_menu']);
 
         //绑定user_agent
         $data['user_agent'] = request()->header('user-agent');

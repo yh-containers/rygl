@@ -11,6 +11,7 @@ class Industry extends Common
         return view('index',[
             'list' => $list,
             'page' => $list->render(),
+            'count'=> count($list),
         ]);
     }
 
@@ -22,7 +23,6 @@ class Industry extends Common
         if($this->request->isAjax()) {
             $validate = new \app\common\validate\Industry();
             $validate->scene(self::VALIDATE_SCENE);
-
             $input_data = $this->request->param();
             return $model->actionAdd($input_data,$validate);
         }

@@ -6,6 +6,7 @@ use think\Validate;
 
 class Base extends Model
 {
+    const AUTH_FIELD='';
     // 设置JSON数据返回数组
     protected $jsonAssoc = true;
 

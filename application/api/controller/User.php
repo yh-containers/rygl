@@ -104,4 +104,89 @@ class User extends Common
         return jsonOut($result['msg'],$result['code'],$id);
     }
 
+
+    //申请列表
+    public function reqList()
+    {
+        //要查看的用户
+        $user_id = $this->request->param('user_id',$this->user_id,'intval');
+
+        $model = new \app\common\model\UserReqEvent();
+        $where[] = ['cid','=',$this->company_id];//公司id
+
+        //按类型查看
+        $type = $this->request->param('type',0,'intval');
+        !empty($type) && $where[] =['type','=',$type];
+
+        //按处理结果查看
+        $status = $this->request->param('status',null);
+        is_numeric($status) && $where[] =['status','=', $status];
+
+        if(empty($user_id) || $user_id != $this->user_id){  //管理者查看判断
+
+            list($bool) = $this->checkUserAuth($model);
+            if(!$bool) {
+                return jsonOut('你无权查看列表',0);
+            }
+
+            //查看指定用户
+            !empty($user_id) && $where[] = ['uid','=',$user_id];
+
+        }else{
+            //绑定用户
+            $where[] = ['uid','=',$user_id];
+        }
+
+        $list = $model
+            ->where($where)
+            ->order('id','desc')
+            ->paginate()
+            ->each(function($item,$index){
+            $item['type_name'] = $item->type_name;
+            $item['status_name'] = $item->status_name;
+        })->toArray();
+
+        $need_fields = [
+            'total' =>0,'per_page'=>0,'current_page'=>0,'last_page'=>0,
+            'data'=>[
+                'id'=>0,'type'=>0,'type_name'=>'','content'=>'','start_time'=>'',
+                'end_time'=>'','status'=>0,'status_name'=>'','create_time'=>''
+            ]
+        ];
+        $list = filter_data($list,$need_fields);
+        return jsonOut('获取成功',1,$list);
+    }
+
+
+    //申请详情
+    public function reqDetail()
+    {
+        $id = $this->request->param('id',0,'intval');
+        empty($id) && abort(40001,'参数异常');
+
+        $model = new \app\common\model\UserReqEvent();
+
+        $info = $model->with(['linkFlow'])->where([
+            ['id','=',$id],
+            ['cid','=',$this->company_id]
+        ])->find();
+        empty($info) && abort(40001,'数据异常');
+        //绑定数据
+        $info->append(['type_name','status_name']);
+
+        //获取当前登录者用户信息
+        if($this->user_id!=$info['uid']){
+            list($bool) = $this->checkUserAuth($model);
+            !$bool && abort(40001,'你没有权限查看');
+        }
+        $need_fields = [
+            'id' =>0,'type'=>0,'type_name'=>'','content'=>'','start_time'=>'','end_time'=>'',
+            'status'=>'','status_name'=>'','create_time'=>'',
+            'link_flow'=>[
+                'id'=>0,'content'=>0,'create_time'=>'',
+            ]
+        ];
+        $data = filter_data($info,$need_fields);
+        return jsonOut('获取成功',1, $data);
+    }
 }

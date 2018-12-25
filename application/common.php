@@ -58,9 +58,9 @@ function filter_data($data,$need_fields,$mode=1)
                 $fields = [$key=>$vo];
             }
 
-
-            if(key($handle_data)===0){//说明$vo是一个二维数据
-
+            if(empty($handle_data)){
+                $result_data[$key] = [];
+            } elseif (key($handle_data)===0){//说明$vo是一个二维数据
                 foreach ($handle_data as $item){
                     $result_data[$key][] = handle_filter_arr($fields,$item);
                 }

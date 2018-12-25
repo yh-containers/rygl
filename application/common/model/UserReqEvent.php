@@ -3,6 +3,9 @@ namespace app\common\model;
 
 class UserReqEvent extends Base
 {
+    //用作权限判断名
+    const AUTH_FIELD='c_n_auth';
+
     protected $name='user_req_event';
 
     protected $handle_content;
@@ -13,6 +16,17 @@ class UserReqEvent extends Base
 
     protected $insert = ['status'=>0];
 
+    public function getStartTimeAttr($value)
+    {
+        return $value?date('Y-m-d H:i:s',$value):'';
+    }
+
+    public function getEndTimeAttr($value)
+    {
+        return $value?date('Y-m-d H:i:s',$value):'';
+    }
+
+
     public function setStartTimeAttr($value)
     {
         return $value?strtotime($value):0;
@@ -21,6 +35,23 @@ class UserReqEvent extends Base
     public function setEndTimeAttr($value)
     {
         return $value?strtotime($value):0;
+    }
+
+    //获取类型名
+    public function getTypeNameAttr($value,$data)
+    {
+        $type = !empty($data['type'])?$data['type']:0;
+
+        $type_name = !empty(self::$fields_type[$type])?self::$fields_type[$type]:'';
+        return $type_name;
+
+    }
+    //获取状态名
+    public function getStatusNameAttr($value,$data)
+    {
+        $status = !empty($data['status'])?$data['status']:0;
+        $status_name = !empty(self::$fields_status[$status])?self::$fields_status[$status]:'';
+        return $status_name;
     }
 
 
@@ -65,11 +96,8 @@ class UserReqEvent extends Base
             return $this->handle_content;
         }
 
-
-        $type = $this->getData('type');
-        $status = $this->getData('status');
-        $type_name = !empty(self::$fields_type[$type])?self::$fields_type[$type]:'';
-        $status_name = !empty(self::$fields_status[$status])?self::$fields_status[$status]:'';
+        $type_name = $this->type_name;
+        $status_name = $this->status_name;
 
         $content='';
 
@@ -93,6 +121,6 @@ class UserReqEvent extends Base
      * */
     public function linkFlow()
     {
-        return $this->hasMany('UserReqEventFlow','rid');
+        return $this->hasMany('UserReqEventFlow','rid')->order('id','desc');
     }
 }

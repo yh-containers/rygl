@@ -79,6 +79,7 @@ class User extends Common
         $user_id = $this->request->param('user_id',$this->user_id,'intval');
 
         $query_day = $day<=0 ? ($year.'-'.$month) :( $year.'-'.$month.'-'.$day);
+
         $model =  new \app\common\model\UserSignIn();
         $list = $model->records($this->company_id,$query_day,$user_id);
         $need_fields = ['s_time'=>0,'times'=>0,'status'=>0,'nss'=>0,'nsm'=>0];

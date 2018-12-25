@@ -75,16 +75,16 @@ class UserSignIn extends Base
     {
         $where[] =['cid','=',$company_id];
         $count_times=substr_count($mix_time,'-');
-
         $model = $this->where($where);
         if($count_times==1){ //按月
-            $start_time = $mix_time.'-1';
-            $end_time = strtotime('+1 month',strtotime($start_time));
+            $start_time = strtotime($mix_time.'-1');
+            $end_time = strtotime('+1 month',$start_time);
             $model->whereBetween('s_time',$start_time.','.$end_time);
 
         }else{//按天
-            $start_time = $mix_time;
-            $end_time = strtotime('+1 day',strtotime($start_time));
+            $start_time = strtotime($mix_time);
+            $end_time = strtotime('+1 day',$start_time);
+
             $model->whereBetween('s_time',$start_time.','.$end_time);
         }
         $user_id && $where[] =['uid','=',$user_id];

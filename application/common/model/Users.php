@@ -42,6 +42,8 @@ class Users extends Base
         return self::pwdEncrypt($value,$salt);
     }
 
+
+
     //检测用户各种问题
     public function checkInfo($account,$password)
     {
@@ -91,6 +93,15 @@ class Users extends Base
         return $user_info->handleLoginInfo();
     }
 
+    //检测用户权限
+    public function checkMenuAuth($check_menu)
+    {
+        $menu = $this->getOptMenu();
+        if(!in_array($check_menu,$menu)){
+            return false;
+        }
+        return true;
+    }
 
     /*
      * 特殊操作特殊处理-
@@ -101,6 +112,8 @@ class Users extends Base
      *
      *
      * c_n_opt       加入公司后 常规操作--签到(sign)--请假()--调休..查看公司信息......
+     * c_n_auth      审核权限
+     *
      * c_name        调整公司名
      * c_work_time   调整作息时间
      *
@@ -109,14 +122,18 @@ class Users extends Base
     public function getOptMenu()
     {
         $menu = [];
+        $company_id = $this->getData('cid');
+        $user_id = $this->getData('id');
+        $is_auth = $this->getData('is_auth');
+
         //操作栏目
-        if($this->cid) { //已在公司
+        if($company_id) { //已在公司
             array_push($menu,'c_n_opt');
 
             //加入公司后可以操作的菜单
-            $company_info = model('Company')->find($this->cid);
+            $company_info = model('Company')->find($company_id);
 
-            if($company_info['uid']==$this->id){ //判断是否是创始人
+            if($company_info['uid']==$user_id){ //判断是否是创始人
                 array_push($menu,'c_c_name','c_name','c_work_time');
             }
 
@@ -126,7 +143,7 @@ class Users extends Base
         }
 
         //判断用户是否实名
-        $this->is_auth !=1 && array_push($menu,'auth_name');
+        $is_auth !=1 && array_push($menu,'auth_name');
 
         return $menu;
     }

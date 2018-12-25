@@ -1,6 +1,7 @@
 <?php
 namespace app\api\controller;
 
+use app\common\model\Base;
 use think\App;
 use think\Container;
 
@@ -46,5 +47,15 @@ class Common
                 abort(-1,'请先登录');
             }
         }
+    }
+
+
+    protected function checkUserAuth(Base $model)
+    {
+        $user_model = new \app\common\model\Users();
+        $user_model = $user_model->findOrEmpty($this->user_id);
+        //检测权限
+        $bool = $user_model->checkMenuAuth($model::AUTH_FIELD);
+        return [ $bool,$user_model];
     }
 }

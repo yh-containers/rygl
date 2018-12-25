@@ -6,6 +6,7 @@ use think\Validate;
 
 class Base extends Model
 {
+    const AUTH_FIELD='';
     // 设置JSON数据返回数组
     protected $jsonAssoc = true;
 
@@ -20,7 +21,7 @@ class Base extends Model
             return ['code'=>0,'msg'=>$validate->getError()];
         }
         //
-        $model = $this;
+        $model = &$this;
 
         $where = [];
         $pk = $model->getPk();

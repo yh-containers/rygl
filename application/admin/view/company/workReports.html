@@ -1,0 +1,37 @@
+﻿{extend name="base"}
+{block name="title"}员工管理-工作汇报{/block}
+
+{block name="crumb"}首页,员工管理,工作汇报{/block}
+
+{block name="content"}
+
+<div class="page-container">
+
+	<div class="mt-20">
+		<table class="table table-border table-bordered table-hover table-bg table-sort">
+			<thead>
+				<tr class="text-c">
+					<th width="25"><input type="checkbox" name="" value=""></th>
+					<th width="60">ID</th>
+					<th width="60">用户名</th>
+					<th>留言内容</th>
+					<th width="100">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!--{volist name="list" id="vo"}-->
+					<tr class="text-c">
+						<td><input type="checkbox" value="1" name=""></td>
+						<td>1</td>
+						<td></td>
+						<td class="text-l">123123123123123123123</td>
+						<td class="td-manage">
+							<a href="">查看详情</a>
+						</td>
+					</tr>
+				<!--{/volist}-->
+			</tbody>
+		</table>
+	</div>
+</div>
+{/block}

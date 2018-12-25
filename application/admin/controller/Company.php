@@ -136,4 +136,16 @@ class Company extends Common
         $model = new \app\common\model\Users();
         return $model->actionDel($id);
     }
+
+    public function workReports()
+    {
+        $uid = $this->request->param('uid',0,'intval');
+        $model = new \app\common\model\WorkReport();
+        $list = $model->where('uid','=',$uid)->paginate();
+        return view('users',[
+            'list' => $list,
+            'page' => $list->render(),
+            'count'=> count($list),
+        ]);
+    }
 }

@@ -85,7 +85,12 @@ class User extends Common
         $list = filter_data($list,$need_fields,2);
         $list = handle_data_day($list,'s_time');
         return jsonOut('获取成功',1,$list);
-
-
     }
+
+    //工作日志
+//    public function workLog()
+//    {
+//
+//    }
+
 }

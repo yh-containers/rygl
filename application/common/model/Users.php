@@ -1,13 +1,11 @@
 <?php
 namespace app\common\model;
 
-use app\common\model\traits\UserFlowLeave;
-use app\common\model\traits\UserFlowWork;
 use think\model\concern\SoftDelete;
 
 class Users extends Base
 {
-    use SoftDelete,UserFlowLeave,UserFlowWork;
+    use SoftDelete;
 
     protected $name = 'users';
 

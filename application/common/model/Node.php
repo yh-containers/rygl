@@ -13,7 +13,6 @@ class Node extends Base
         $where = [
             ['status','=',1],
             ['pid','=',0],
-            ['level','=',1],
         ];
         if($is_admin) { //管理员界面
             $where[] =['is_admin','=',1];

@@ -12,25 +12,39 @@ class Node extends Base
     {
         $where = [
             ['status','=',1],
-            ['pid','=',0],
         ];
         if($is_admin) { //管理员界面
-            $where[] =['is_admin','=',1];
-        }else{      //员工界面
-            $where[] =['is_company','=',1];
+            $where[] =['is_admin','=',0];
+            $link = 'linkAdminNode';
+            $key = 'link_admin_node';
+
+        }else{      //公司界面
+            $where[] =['is_company','=',0];
+            $link = 'linkCompanyNode';
+            $key = 'link_company_node';
         }
-        $data = $this->with(['linkNode'=>function($query){
+
+        $data = $this->with([$link=>function($query){
             return $query->where('status',1);
         }])->where($where)->order('sort','asc')->select();
-        return $data;
+        return [$data,$key];
     }
 
     /*
-     * 一对多关联
+     * 一对多关联--管理员
      * */
-    public function linkNode()
+    public function linkAdminNode()
     {
-        return $this->hasMany('Node','pid')->order('sort','asc');
+        return $this->hasMany('Node','is_admin')->order('sort','asc');
+    }
+
+
+    /*
+     * 一对多关联--公司
+     * */
+    public function linkCompanyNode()
+    {
+        return $this->hasMany('Node','is_company')->order('sort','asc');
     }
 
 }

@@ -10,9 +10,10 @@ class Index extends Common
     public function index()
     {
         $model = new \app\common\model\Node();
-        $node =  $model->tree($this->is_admin);
+        list($node,$link_key) =  $model->tree($this->is_admin);
         return view('index',[
-            'node'=>$node
+            'node'=>$node,
+            'link_key' => $link_key
         ]);
     }
 

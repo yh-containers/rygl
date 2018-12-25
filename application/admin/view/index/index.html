@@ -57,7 +57,7 @@
 			<dt><i class="Hui-iconfont">&#xe616;</i> {$vo['name']}{:$vo['icon']?$vo['icon']:'<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i>'}</dt>
 				<dd>
 					<ul>
-						{volist name="vo['link_node']" id="child"}
+						{volist name="vo[$link_key]" id="child"}
 						<li><a data-href="{:url($child['url'])}" data-title="{$child['name']}" href="javascript:void(0)">{$child['name']}</a></li>
 						{/volist}
 					</ul>

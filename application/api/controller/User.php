@@ -99,7 +99,9 @@ class User extends Common
         $input_data['cid'] = $this->company_id;
 
         $result = $model->actionAdd($input_data,$validate);
-        return jsonOut($result['msg'],$result['code'],$model->getKey());
+        //主键
+        $id = !empty($input_data['id'])?$input_data['id']:($model->getKey()?$model->getKey():0);
+        return jsonOut($result['msg'],$result['code'],$id);
     }
 
 }

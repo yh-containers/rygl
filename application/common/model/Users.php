@@ -94,10 +94,11 @@ class Users extends Base
     }
 
     //检测用户权限
-    public function checkMenuAuth($check_menu)
+    public function checkMenuAuth(array $check_menu)
     {
         $menu = $this->getOptMenu();
-        if(!in_array($check_menu,$menu)){
+        $intersect = array_intersect($check_menu, $menu);
+        if(empty($intersect)){
             return false;
         }
         return true;
@@ -114,6 +115,7 @@ class Users extends Base
      * c_n_opt       加入公司后 常规操作--签到(sign)--请假()--调休..查看公司信息......
      * c_n_auth      审核权限
      *
+     * c_m_base      公司基本信息修改
      * c_name        调整公司名
      * c_work_time   调整作息时间
      *
@@ -132,9 +134,8 @@ class Users extends Base
 
             //加入公司后可以操作的菜单
             $company_info = model('Company')->find($company_id);
-
             if($company_info['uid']==$user_id){ //判断是否是创始人
-                array_push($menu,'c_c_name','c_name','c_work_time');
+                array_push($menu,'c_c_name','c_name','c_m_base','c_work_time');
             }
 
 

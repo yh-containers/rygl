@@ -4,7 +4,7 @@ namespace app\common\model;
 class UserReqEvent extends Base
 {
     //用作权限判断名
-    const AUTH_FIELD='c_n_auth';
+    const AUTH_FIELD = ['c_n_auth'];
 
     protected $name='user_req_event';
 

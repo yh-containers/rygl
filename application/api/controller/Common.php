@@ -50,12 +50,15 @@ class Common
     }
 
 
-    protected function checkUserAuth(Base $model)
+    protected function checkUserAuth(Base $model,array $auth=[])
     {
+        //验证操作权限
+        $auth = $auth?$auth:$model::AUTH_FIELD;
+
         $user_model = new \app\common\model\Users();
         $user_model = $user_model->findOrEmpty($this->user_id);
         //检测权限
-        $bool = $user_model->checkMenuAuth($model::AUTH_FIELD);
+        $bool = $user_model->checkMenuAuth($auth);
         return [ $bool,$user_model];
     }
 }

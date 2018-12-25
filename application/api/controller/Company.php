@@ -20,5 +20,22 @@ class Company extends Common
 
         return jsonOut('获取成功',1,$info);
     }
+
+    //修改公司信息
+    public function modInfo()
+    {
+        $input_data = $this->request->param();
+        $allowField = ['name','logo','area_id','address','industry_id',
+            'description','website','contact','phone','coordinate','sign_mac','work_time','update_time'];
+
+
+        $model = new \app\common\model\Company();
+        list($bool) = $this->checkUserAuth($model,['c_m_base']);
+        !$bool && abort(40001,'你无权操作');
+
+        $bool = $model->allowField($allowField)->save($input_data,['id'=>$this->company_id]);
+
+        return jsonOut($bool?'操作成功':'操作失败',(int)$bool);
+    }
 }
 

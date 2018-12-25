@@ -1,0 +1,174 @@
+﻿{extend name="base"}
+{block name="title"}员工管理-员工列表{/block}
+
+{block name="crumb"}首页,员工管理,员工详情{/block}
+
+{block name="content"}
+<article class="page-container">
+    <form class="layui-form" action="">
+        <input type="hidden" name="id" value="{$model['id']}"/>
+        <input type="hidden" name="cid" value="{$model['cid']|default=$cid}"/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">姓名</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" value="{$model['name']}"  placeholder="姓名" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">性别</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="1" {:empty($model)?'checked':($model['sex']===1?'checked':'')} title="男">
+                <input type="radio" name="sex" value="2" {:$model['sex']===2?'checked':''} title="女">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">手机</label>
+            <div class="layui-input-block">
+                <input type="text" name="phone" value="{$model['phone']}"  placeholder="手机" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱</label>
+            <div class="layui-input-block">
+                <input type="text" name="email" value="{$model['email']}"  placeholder="邮箱@" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">部门</label>
+            <div class="layui-input-block">
+                <select name="department" id="">
+                    {volist name="department" id="vo"}
+                    <option value="{$vo['id']}">{$vo['name']}</option>
+                    {/volist}
+                </select>
+                <!--<input type="text" name="department" value="{$model['department']}"  placeholder="部门" class="layui-input">-->
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">职位</label>
+            <div class="layui-input-block">
+                <input type="text" name="position" value="{$model['position']}"  placeholder="职位" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">家庭住址</label>
+            <div class="layui-input-block">
+                <input type="text" name="addr" value="{$model['addr']}"  placeholder="家庭住址" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注</label>
+            <div class="layui-input-block">
+                <input type="text" name="remarks" value="{$model['remarks']}"  placeholder="备注" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" type="button" onclick="$.common.submit($(this).parents('form'))">立即提交</button>
+            </div>
+        </div>
+
+    </form>
+</article>
+<!--
+<article class="page-container">
+    <form class="layui-form" action="">
+		<input type="hidden" name="id" value="{$model['id']}"/>
+		<div class="row cl">
+			<label class="form-label col-xs-1 col-sm-1"><span class="c-red">*</span>姓名：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="{$model['name']}" placeholder="" id="username" name="username">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-1 col-sm-1"><span class="c-red">*</span>性别：</label>
+			<div class="formControls col-xs-8 col-sm-9 skin-minimal">
+				<div class="radio-box">
+					<input name="sex" type="radio" id="sex-1" checked>
+					<label for="sex-1">男</label>
+				</div>
+				<div class="radio-box">
+					<input type="radio" id="sex-2" name="sex">
+					<label for="sex-2">女</label>
+				</div>
+				<div class="radio-box">
+					<input type="radio" id="sex-3" name="sex">
+					<label for="sex-3">未知</label>
+				</div>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-1 col-sm-1"><span class="c-red">*</span>手机：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="{$model['phone']}" placeholder="" id="phone" name="phone">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-1 col-sm-1"><span class="c-red">*</span>邮箱：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="{$model['email']}" placeholder="@" name="email" id="email">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-1 col-sm-1">部门：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span class="select-box" style="width:150px;">
+					<select class="select valid" name="department">
+						{volist name='department' id='vo'}
+							<option value="{$vo['id']}">{$vo['name']}</option>
+						{/volist}
+					</select>
+				</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-1 col-sm-1">职位：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" name="position" id="position">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-1 col-sm-1">家庭住址：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="{$model['addr']}" name="addr" id="addr">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-1 col-sm-1">备注：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<textarea name="beizhu" cols="" rows="" class="textarea"  placeholder="说点什么...最少输入10个字符" onKeyUp="$.Huitextarealength(this,100)"></textarea>
+				<p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+			</div>
+		</div>
+	</form>
+</article>-->
+
+{/block}
+{block name="script"}
+
+<script>
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+    });
+</script>
+{/block}

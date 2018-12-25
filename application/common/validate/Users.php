@@ -23,6 +23,8 @@ class Users extends Validate
 
         'captcha.require'        => '验证码必须输入',
         'captcha.captcha'        => '验证码错误',
+
+        'name.require'          => '姓名不能为空',
     ];
 
     //api注册
@@ -40,7 +42,12 @@ class Users extends Validate
             ->append('captcha|验证码','require|captcha')
             ->remove('account','require')
             ;
+    }
 
+    //后台公司员工管理
+    public function sceneCompany_opt(){
+        return $this->only(['name','phone'])
+            ;
     }
 
     //验证帐号唯一

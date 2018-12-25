@@ -8,11 +8,12 @@
 
 	<div class="page-container">
 
-		<div class="cl pd-5 bg-1 bk-gray">
+		<!--<div class="cl pd-5 bg-1 bk-gray mt-20">
 			<span class="l">
-				<!--<a href="{:url('add')}" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加管理员</a>-->
+				<a href="{:url('userAdd')}" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加员工</a>
 			</span>
-		</div>
+			<span class="r">共有数据：<strong>{$count|default=0}</strong> 条</span>
+		</div>-->
 		<div class="mt-20">
 			<table class="table table-border table-bordered table-hover table-bg table-sort">
 				<thead>
@@ -36,7 +37,13 @@
 						<td>{:$vo['create_time']}</td>
 						<td class="td-status">{:$vo::$fields_status[$vo['status']]}</td>
 						<td class="td-manage">
-							<a href="{:url('userDetail',['id'=>$vo['id']])}">查看</a>
+							<a href="{:url('userAdd',['id'=>$vo['id']])}">查看</a>
+							<a href="javascript:;"
+							   onclick="$.common.del(this,'{:url('userDel')}',{'id':{:$vo['id']},'type':1})"
+							   data-id="{$vo['id']}">
+								删除
+							</a>
+							<a href="{:url('workReports',['uid'=>$vo['id']])}">工作汇报</a>
 						</td>
 					</tr>
 				{/volist}

@@ -93,7 +93,55 @@ class Company extends Common
     public function users()
     {
         $model = new \app\common\model\Users();
-        $list = $model->where('cid','=',session('admin_info.company_id'))->paginate();
+        $list = $model->where('cid','=',session('admin_info.com_id'))->paginate();
+        return view('users',[
+            'list' => $list,
+            'page' => $list->render(),
+            'count'=> count($list),
+        ]);
+    }
+
+    /*
+     * 公司员工操作-新增&编辑
+     * */
+    public function userAdd()
+    {
+        $id = $this->request->param('id',0,'intval');
+        $cid = session('admin_info.com_id');
+        $model = new \app\common\model\Users();
+        $department_model = new \app\common\model\Department();
+        if($this->request->isAjax()) {
+            $validate = new \app\common\validate\Users();
+            $validate->scene('company_opt');//公司员工管理
+            //$validate->scene(self::VALIDATE_SCENE);
+
+            $input_data = $this->request->param();
+            return $model->actionAdd($input_data,$validate);
+        }
+
+        $model = $model->find($id);
+        $department = $department_model->where('cid',$cid)->select();
+
+        return view('userAdd',[
+            'model' => $model,
+            'department' => $department,
+            'cid'=>$cid
+        ]);
+    }
+
+    //删除员工
+    public function userDel()
+    {
+        $id = $this->request->param('id',0,'intval');
+        $model = new \app\common\model\Users();
+        return $model->actionDel($id);
+    }
+
+    public function workReports()
+    {
+        $uid = $this->request->param('uid',0,'intval');
+        $model = new \app\common\model\WorkReport();
+        $list = $model->where('uid','=',$uid)->paginate();
         return view('users',[
             'list' => $list,
             'page' => $list->render(),

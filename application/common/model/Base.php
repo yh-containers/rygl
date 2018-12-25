@@ -20,7 +20,7 @@ class Base extends Model
             return ['code'=>0,'msg'=>$validate->getError()];
         }
         //
-        $model = $this;
+        $model = &$this;
 
         $where = [];
         $pk = $model->getPk();

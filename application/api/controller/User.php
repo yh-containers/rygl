@@ -87,10 +87,19 @@ class User extends Common
         return jsonOut('获取成功',1,$list);
     }
 
-    //工作日志
-//    public function workLog()
-//    {
-//
-//    }
+    //创建流程--申请 请假，调休，加班
+    public function reqOpt()
+    {
+        $input_data = $this->request->param();
+
+        $validate = new \app\common\validate\UserReqEvent();
+        $model = new \app\common\model\UserReqEvent();
+
+        $input_data['uid'] = $this->user_id;
+        $input_data['cid'] = $this->company_id;
+
+        $result = $model->actionAdd($input_data,$validate);
+        return jsonOut($result['msg'],$result['code'],$model->getKey());
+    }
 
 }

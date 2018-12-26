@@ -209,17 +209,4 @@ class User extends Common
 
         return jsonOut('获取成功',1, $model);
     }
-
-    //申请--编辑详情
-    public function reqCancel()
-    {
-        $id = $this->request->param('id',0,'intval');
-        empty($id) && abort(40001,'参数异常');
-
-        $model = new \app\common\model\UserReqEvent();
-        $bool = $model->cancelAction($id,$this->user_id);
-
-        return jsonOut($bool?'操作成功':'操作异常',(int)$bool);
-    }
-
 }

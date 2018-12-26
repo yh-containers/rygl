@@ -50,7 +50,7 @@ class Common
     }
 
 
-    protected function checkUserAuth(Base $model,array $auth=[])
+    protected function checkUserAuth(Base $model=null,array $auth=[])
     {
         //验证操作权限
         $auth = $auth?$auth:$model::AUTH_FIELD;

@@ -97,6 +97,7 @@ class UserReqEvent extends Base
         }
 
         $type_name = $this->type_name;
+        $status = $this->status;
         $status_name = $this->status_name;
 
         $content='';
@@ -114,6 +115,32 @@ class UserReqEvent extends Base
 
     }
 
+    /*
+     * 取消审核
+     * */
+    public function cancelAction($id,$user_id)
+    {
+        return $this->save(
+            ['status'=>1]
+            ,['id'=>$id,'uid'=>$user_id]
+        );
+    }
+
+    /*
+     * 流程审核
+     * */
+    public function authAction($id,$status)
+    {
+
+        $model = $this->find($id);
+        empty($model) && abort(40001,'资源异常');
+
+        !empty($model->status) && abort(40001,'流程未处于审核状态无法操作');
+
+        $model->status = $status == 2 ? 2 : 3 ;  //处理状态 2通过 3拒绝
+        $bool = $model->save();
+        return $bool;
+    }
 
 
     /*

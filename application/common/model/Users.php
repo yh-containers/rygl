@@ -135,7 +135,7 @@ class Users extends Base
             //加入公司后可以操作的菜单
             $company_info = model('Company')->find($company_id);
             if($company_info['uid']==$user_id){ //判断是否是创始人
-                array_push($menu,'c_c_name','c_name','c_m_base','c_work_time');
+                array_push($menu,'c_c_name','c_name','c_m_base','c_n_auth','c_work_time');
             }
 
 

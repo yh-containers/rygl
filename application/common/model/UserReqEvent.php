@@ -133,8 +133,8 @@ class UserReqEvent extends Base
         foreach (self::$fields_type as $key=>$vo) {
             if($vo){
                 $fields_type[]=[
-                    'type' => $key,
-                    'value' => $vo
+                    'type' => $vo,
+                    'value' => $key
                 ];
             }
         }

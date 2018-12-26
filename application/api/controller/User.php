@@ -206,4 +206,24 @@ class User extends Common
 
         return jsonOut('获取成功',1, $model);
     }
+
+    //提交工作汇报
+    public function reportAdd()
+    {
+        $input_data = $this->request->param();
+        $validate = new \app\common\validate\WorkReport();
+        $validate->scene(self::SCENE);
+        $model =  new \app\common\model\WorkReport();
+
+        $report_info = $model->find($input_data['id']);
+        if($report_info['uid'] != $this->user_id){
+            return jsonOut('操作失败！',0);
+        }
+        $input_data['uid'] = $this->user_id;
+        $input_data['cid'] = $this->company_id;
+
+        $result = $model->actionAdd($input_data,$validate);
+
+        return jsonOut($result['msg'],$result['code']);
+    }
 }

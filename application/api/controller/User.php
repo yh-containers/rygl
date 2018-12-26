@@ -218,7 +218,7 @@ class User extends Common
         $model = $model->find($user_id);
 
         empty($model) && abort(40001,'资源异常');
-        $hidden_field = ['delete_time','update_time',''];
+        $hidden_field = ['delete_time','update_time','password','salt'];
         $model->hidden($hidden_field);
 
         return jsonOut('获取成功',1, $model);

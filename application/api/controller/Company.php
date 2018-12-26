@@ -44,5 +44,20 @@ class Company extends Common
     {
         return  jsonOut('获取成功',1,\app\common\model\UserReqEvent::fieldsType());
     }
+
+    //获取公司员工
+    public function users()
+    {
+        $model = new \app\common\model\Users();
+        $where['cid'] = $this->company_id;
+        $data= $model->where($where)->select()->each(function($item,$index)use(&$data){
+            $item['py_prefix'] = empty($item['py'])?'#':strtoupper($item['py'][0]);
+        });
+        $need_fields = [
+            'id'=>0,'name'=>'','phone'=>'','header_img'=>'','status'=>'','create_time'=>'','sex'=>'0','is_auth'=>0
+        ];
+        $list = filter_data($data,$need_fields,2);
+        return jsonOut('获取成功',1,$list);
+    }
 }
 

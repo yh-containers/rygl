@@ -11,6 +11,8 @@ class UserSignIn extends Base
     public static $fields_nss = ['正常','迟到','早退'];
     //今日时间(Y-m-d)
     public static $current_day;
+    //当前月份
+    public static $current_month;
     //当前时间戳
     public static $current_time;
 
@@ -18,6 +20,7 @@ class UserSignIn extends Base
     {
         //获取当前日期
         self::$current_day = date('Y-m-d');
+        self::$current_month = date('Y-m');
         self::$current_time = time();
     }
 
@@ -31,38 +34,45 @@ class UserSignIn extends Base
         empty($input_data['mac']) && abort(40001,'参数异常');
         $mac = $input_data['mac'];
 
-        $user_info = $this->where('uid',$user_id)->order('id','desc')->find();
+        $user_info = $this->where(['uid'=>$user_id,'cid'=>$cid])->order('id','desc')->find();
 
         //距离上次打卡必须超过
         if(!empty($user_info) && self::$current_time-$user_info['s_time']<=self::SIGN_SPACE_TIME){
             abort(40001,'打卡间隔时间必须超过'.self::SIGN_SPACE_TIME.'秒');
         }
 
-
         //获取公司打卡时间规则
         $company_model = model('Company')->where('id',$cid)->find();
         $work_time = $company_model['work_time'];
         $sign_mac = $company_model['sign_mac'];
-        if(!empty($sign_mac) && $sign_mac!=$mac) {
-            abort(40001,'请链接公司wifi进行打卡');
+        if(empty($sign_mac) || $sign_mac!=$mac) {
+            abort(40001,'请连接公司wifi进行打卡');
         }
 
-
         $s_day = date('Y-m-d',$user_info['s_time']);
+        $s_month = date('Y-m',$user_info['s_time']);
+
+        //记录打卡天数
+        if($s_month!=self::$current_month){
+            $day = 1;
+        }else{
+            $day = self::$current_day != $s_day? ($user_info['day']+1): $user_info['day'];
+        }
+
         if(empty($user_info) || self::$current_day != $s_day){
             //今天未打卡
-            list($bool,$status,$nsm,$nss) = $this->createSign($user_id,$cid,$mac,$work_time);
+            list($bool,$status,$nsm,$nss) = $this->createSign($user_id,$cid,$mac,$work_time,1,$day);
         }else{
             //已打过卡
             $times = $user_info['times']+1;
             if($times>2) {
                 abort(40001,'一天只能打两次卡');
             }
-            list($bool,$status,$nsm,$nss) = $this->createSign($user_id,$cid,$mac,$work_time,$times);
+            list($bool,$status,$nsm,$nss) = $this->createSign($user_id,$cid,$mac,$work_time,$times,$day);
         }
 
 
-        return [$bool,$bool?'打卡成功':'打卡异常',self::$current_time,$status,$nsm,$nss];
+        return [$bool,$bool?'打卡成功':'打卡异常',self::$current_time,$status,$nsm,$nss,$day];
     }
 
     /*
@@ -101,8 +111,9 @@ class UserSignIn extends Base
      * @param $cid int 公司id
      * @param $mac 打卡条件
      * @param $times 打卡次数
+     * @param $days 当月签到多少天
      * */
-    protected function createSign($user_id,$cid,$mac='',$work_time,$times=1)
+    protected function createSign($user_id,$cid,$mac='',$work_time,$times=1,$day=1)
     {
         $status = 1; //上班卡
         $nsm = 0; //非正常打卡时间范围
@@ -141,6 +152,7 @@ class UserSignIn extends Base
             'mac'=>$mac,
             'times'=>$times,
             'status'=>$status,
+            'day'=>$day,
             'nss'=>$nss,
             'nsm'=>$nsm,
             's_time'=>self::$current_time,

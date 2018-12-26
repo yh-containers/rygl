@@ -59,5 +59,27 @@ class Company extends Common
         $list = filter_data($data,$need_fields,2);
         return jsonOut('获取成功',1,$list);
     }
+
+    //获取出勤汇总--按月获取
+    public function workSum()
+    {
+        $year = $this->request->request('year',0,'intval');
+        $time[] = empty($year)?date('Y'):$year;
+        $month = $this->request->request('month',0,'intval');
+        $time[] = empty($month)?date('m'):$month;
+        $time[] = '1';
+
+        $year_month = implode('-',$time);
+
+        $model = new \app\common\model\Users();
+        $data = $model->workSignRecord($this->company_id,$year_month);
+        $need_fields = [
+            'id'=>0,'name'=>'','header_img'=>'',
+            'link_sign_count'=>['sign_times'=>'1|0','late_times'=>'1|0','advance_times'=>'1|0','work_day'=>'1|0'],
+            'link_req_event_count'=>['req_times'=>0],
+        ];
+        $list = filter_data($data,$need_fields,2);
+        return jsonOut('获取成功',1,$list);
+    }
 }
 

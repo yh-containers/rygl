@@ -13,7 +13,7 @@ class Users extends Base
 
     protected $name = 'users';
 
-    protected $insert = ['header_img'];
+    protected $insert = ['header_img','cid'=>1];
 
     /*
      * 密码加密
@@ -211,6 +211,8 @@ class Users extends Base
         return $menu;
     }
 
+    //出勤记录
+
 
     //处理用户登录凭证
     protected function handleLoginInfo()
@@ -275,9 +277,63 @@ class Users extends Base
         return  sha1($str);
     }
 
+    //获取用户打卡记录--按月获取
+    public function workSignRecord($company_id,$year_month,$user_id=0)
+    {
+        $opt_query = 'select';
+        $where[] =['cid','=',$company_id];
+        if($user_id) {
+            $opt_query = 'find';
+            $where[] =['id','=',$user_id];
+        }
+        $start_time = strtotime($year_month);
+        $end_time = strtotime('+1 month',$start_time);
+        $data = $this->where($where)->with([
+            'linkSignCount'=>function($query)use($company_id,$start_time,$end_time){
+                    return $query->field([
+                        'uid','count(*)'=>'sign_times','sum(if(nss=1,1,0))'=>'late_times','sum(if(nss=2,1,0))'=>'advance_times',
+                        'max(day)'=>'work_day'
+                    ])
+                ->group('uid')->where(['cid'=>$company_id])->whereBetween('s_time',$start_time.','.$end_time);
+            },
+            'linkReqEventCount'=>function($query)use($company_id,$start_time,$end_time){
+                    return $query->field([
+                        'uid','count(*)'=>'req_times','sum(if(type=1,1,0))'=>'type_1','sum(if(type=2,1,0))'=>'type_2',
+                        'sum(if(type=3,1,0))'=>'type_3',
+                    ])->group('uid')->where(['cid'=>$company_id])->whereBetween('create_time',$start_time.','.$end_time);
+
+            }
+            ])->$opt_query();
+        return $data;
+    }
+
+
     //关联公司信息
     public function linkCompany()
     {
         return $this->belongsTo('Company','cid');
+    }
+
+    //签到信息
+    public function linkSign()
+    {
+        return $this->hasMany('UserSignIn','uid');
+    }
+    //签到信息--统计
+    public function linkSignCount()
+    {
+        return $this->hasOne('UserSignIn','uid');
+    }
+
+    //审批请假
+    public function linkReqEvent()
+    {
+        return $this->hasMany('UserReqEvent','uid');
+    }
+
+    //审批请假--统计
+    public function linkReqEventCount()
+    {
+        return $this->hasOne('UserReqEvent','uid');
     }
 }

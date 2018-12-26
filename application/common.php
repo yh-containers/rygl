@@ -59,9 +59,17 @@ function filter_data($data,$need_fields,$mode=1)
                 $handle_data = $data;
                 $fields = [$key=>$vo];
             }
-
             if(empty($handle_data)){
-                $result_data[$key] = [];
+                if(is_array($vo)){
+                    $handel_result = handle_spe_filter_arr($vo);
+
+                    $result_data = array_merge($result_data,$handel_result);
+
+                }else{
+                    $result_data[$key] = [];
+                }
+
+
             } elseif (key($handle_data)===0){//说明$vo是一个二维数据
                 foreach ($handle_data as $item){
                     $result_data[$key][] = handle_filter_arr($fields,$item);
@@ -112,6 +120,25 @@ function handle_filter_arr($filed_info, $handle_data)
     }
     return $data;
 }
+
+//特殊处理数据--一维数组
+function handle_spe_filter_arr($filed_info)
+{
+    $data = [];
+    foreach ($filed_info as $fk=>$item) {
+        if(substr($fk,0,1)==='|'){
+            $change_key =$search_key = substr($fk,1);
+        }else{
+            $change_key =$search_key = $fk;
+        }
+        $str_pos = strpos($item,'|');
+        if($str_pos!==false){
+            $data[$change_key] = substr($item,$str_pos+1);
+        }
+    }
+    return $data;
+}
+
 
 
 /**

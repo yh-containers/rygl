@@ -15,22 +15,24 @@
 //获取图片
 function get_image_location($img,$domain=false)
 {
+    //域名补全
+    $file_domain='';
+    $domain && $file_domain = config('?file_domian')?config('file_domian'):request()->domain();
     if(is_array($img)){
         foreach($img as &$vo){
             if(preg_match('/^https?/',$vo)){
 
             }else{
-                $vo= ($domain?app()->config('file_domain'):'').DIRECTORY_SEPARATOR.$vo;
+                $vo= $file_domain.'/'.$vo;
             }
         }
     }else{
         if(preg_match('/^https?/',$img)){
 
         }else{
-            $img= ($domain?app()->config('file_domain'):'').DIRECTORY_SEPARATOR.$img;
+            $img= $file_domain.'/'.$img;
         }
     }
-
     return $img;
 }
 

@@ -42,7 +42,10 @@ class User extends Common
         $input_data = $this->request->param();
         $allow_field = ['name','header_img','province','city','area','addr'];
         $model =  new \app\common\model\Users();
-        $bool = $model->allowField($allow_field)->save($input_data,['id'=>$this->user_id]);
+        $model = $model->find($this->user_id);
+        empty($model) && abort(40001,'用户信息异常');
+
+        $bool = $model->allowField($allow_field)->save($input_data);
         return jsonOut($bool?'修改成功':'修改失败',(int)$bool);
     }
 
@@ -225,5 +228,21 @@ class User extends Common
         $result = $model->actionAdd($input_data,$validate);
 
         return jsonOut($result['msg'],$result['code']);
+
+    }
+
+    //获取用户信息
+    public function info()
+    {
+        $user_id = $this->request->param('user_id',$this->user_id,'intval');
+        $model = new \app\common\model\Users();
+        $model = $model->find($user_id);
+
+        empty($model) && abort(40001,'资源异常');
+        $hidden_field = ['delete_time','update_time','password','salt'];
+        $model->hidden($hidden_field);
+
+        return jsonOut('获取成功',1, $model);
+        
     }
 }

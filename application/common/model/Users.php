@@ -1,11 +1,15 @@
 <?php
 namespace app\common\model;
 
+use think\facade\Env;
 use think\model\concern\SoftDelete;
+use Overtrue\Pinyin\Pinyin;
 
 class Users extends Base
 {
     use SoftDelete;
+
+    const HEADER_PATH = 'uploads/images/user_header/default_';
 
     protected $name = 'users';
 
@@ -22,14 +26,30 @@ class Users extends Base
     /*
      * 设置用户头像
      * */
-    public function setHeaderImgAttr($value,$data)
+    public function getHeaderImgAttr($value)
     {
-        if(empty($data['id'])){//新增
-            $value = '/images/header/default_header_'.rand(1,8).'.png';
+        if(empty($value)){
+            return $value;
+        }
+        //判断是那里获取的资源 --api直接加上图片地址
+        $module = request()->module();
+        if(in_array($module,$this->is_repair_domain)){
+            return get_image_location($value,true);
         }
 
         return $value;
+    }
 
+    /*
+     * 设置用户头像
+     * */
+    public function setHeaderImgAttr($value,$data)
+    {
+        if(empty($data['id'])){//新增
+            $value = 'images/header/default_header_'.rand(1,8).'.png';
+        }
+
+        return $value;
     }
 
     public function setPasswordAttr($value)
@@ -40,6 +60,46 @@ class Users extends Base
         $salt = rand(10000,99999);
         $this->data('salt',$salt);
         return self::pwdEncrypt($value,$salt);
+    }
+
+    //设置用户名
+    public function setNameAttr($value,$data)
+    {
+        $allow_fields = $this->checkAllowFields();
+
+        $header_img = isset($this->header_img)?$this->header_img:'';
+        if(strpos($header_img,'/default_')){ //表名是系统默认头像
+            //更新用户头像
+            $mb_len = mb_strlen($value,'utf8');
+            if($mb_len<=2){
+                $name = $value;
+            }else{
+                $name = mb_substr($value,-2);
+            }
+            $root_path = Env::get('root_path');
+            $header_img_path = $root_path.'/public/images/header/header_img.png';
+            $ttl_path = $root_path.'/public/images/header/DroidSansChinese.ttf';
+            if(file_exists($header_img_path) && file_exists($ttl_path)){ //文件存在
+                //z字体路径
+                $image = \think\Image::open($header_img_path);
+                $save_name = self::HEADER_PATH.(!empty($data['id'])?$data['id']:time()).'.png';
+                $save_path = $root_path.'/public/'.$save_name;
+                // 给原图左上角添加水印并保存
+                $image->text($name,$ttl_path,55,'#ffffff',$image::WATER_CENTER)->save($save_path);
+
+                array_push($allow_fields,'header_img'); //添加可写入字段
+                $this->data('header_img', $save_name );
+            }
+
+        }
+        if(!empty($allow_fields)){
+            $py = new Pinyin();
+            array_push($allow_fields,'py'); //添加可写入字段
+            $this->allowField($allow_fields);
+            $py = $py->permalink($value,'-',PINYIN_NAME);
+            $this->data('py',$py);
+        }
+        return $value;
     }
 
 
@@ -66,6 +126,8 @@ class Users extends Base
 
         return $user_info;
     }
+
+
 
 
     //用户登录

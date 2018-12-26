@@ -15,10 +15,15 @@ class ComposerStaticInit2f054511a1848108bb4d58fa85340bcf
         array (
             'think\\composer\\' => 15,
             'think\\captcha\\' => 14,
+            'think\\' => 6,
         ),
         'a' => 
         array (
             'app\\' => 4,
+        ),
+        'O' => 
+        array (
+            'Overtrue\\Pinyin\\' => 16,
         ),
     );
 
@@ -31,9 +36,17 @@ class ComposerStaticInit2f054511a1848108bb4d58fa85340bcf
         array (
             0 => __DIR__ . '/..' . '/topthink/think-captcha/src',
         ),
+        'think\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/topthink/think-image/src',
+        ),
         'app\\' => 
         array (
             0 => __DIR__ . '/../..' . '/application',
+        ),
+        'Overtrue\\Pinyin\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/overtrue/pinyin/src',
         ),
     );
 

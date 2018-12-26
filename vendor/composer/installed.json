@@ -135,5 +135,94 @@
             }
         ],
         "description": "captcha package for thinkphp5"
+    },
+    {
+        "name": "overtrue/pinyin",
+        "version": "4.0.0",
+        "version_normalized": "4.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/overtrue/pinyin.git",
+            "reference": "8ca475c352ba3ee096bb5f7668fc4247a96af9f9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/overtrue/pinyin/zipball/8ca475c352ba3ee096bb5f7668fc4247a96af9f9",
+            "reference": "8ca475c352ba3ee096bb5f7668fc4247a96af9f9",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.8"
+        },
+        "time": "2018-09-20T09:42:45+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Overtrue\\Pinyin\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Carlos",
+                "homepage": "http://github.com/overtrue"
+            }
+        ],
+        "description": "Chinese to pinyin translator.",
+        "homepage": "https://github.com/overtrue/pinyin",
+        "keywords": [
+            "Chinese",
+            "Pinyin",
+            "cn2pinyin"
+        ]
+    },
+    {
+        "name": "topthink/think-image",
+        "version": "v1.0.7",
+        "version_normalized": "1.0.7.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/top-think/think-image.git",
+            "reference": "8586cf47f117481c6d415b20f7dedf62e79d5512"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/top-think/think-image/zipball/8586cf47f117481c6d415b20f7dedf62e79d5512",
+            "reference": "8586cf47f117481c6d415b20f7dedf62e79d5512",
+            "shasum": ""
+        },
+        "require": {
+            "ext-gd": "*"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.8.*",
+            "topthink/framework": "^5.0"
+        },
+        "time": "2016-09-29T06:05:43+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "think\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "Apache-2.0"
+        ],
+        "authors": [
+            {
+                "name": "yunwuxin",
+                "email": "448901948@qq.com"
+            }
+        ],
+        "description": "The ThinkPHP5 Image Package"
     }
 ]

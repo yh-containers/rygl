@@ -3,6 +3,7 @@ namespace app\api\controller;
 
 class Company extends Common
 {
+    protected $is_need_auth=true;
     //获取公司作息时间
     public function info()
     {
@@ -36,6 +37,12 @@ class Company extends Common
         $bool = $model->allowField($allowField)->save($input_data,['id'=>$this->company_id]);
 
         return jsonOut($bool?'操作成功':'操作失败',(int)$bool);
+    }
+
+    //获取公司申请类型
+    public function reqType()
+    {
+        return  jsonOut('获取成功',1,\app\common\model\UserReqEvent::fieldsType());
     }
 }
 

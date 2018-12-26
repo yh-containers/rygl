@@ -123,4 +123,22 @@ class UserReqEvent extends Base
     {
         return $this->hasMany('UserReqEventFlow','rid')->order('id','desc');
     }
+
+    /*
+     * 获取申请类型
+     * */
+    public static function fieldsType()
+    {
+        $fields_type = [];
+        foreach (self::$fields_type as $key=>$vo) {
+            if($vo){
+                $fields_type[]=[
+                    'type' => $key,
+                    'value' => $vo
+                ];
+            }
+        }
+        return $fields_type;
+    }
+
 }

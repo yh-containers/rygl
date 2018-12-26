@@ -42,7 +42,10 @@ class User extends Common
         $input_data = $this->request->param();
         $allow_field = ['name','header_img','province','city','area','addr'];
         $model =  new \app\common\model\Users();
-        $bool = $model->allowField($allow_field)->save($input_data,['id'=>$this->user_id]);
+        $model = $model->find($this->user_id);
+        empty($model) && abort(40001,'用户信息异常');
+
+        $bool = $model->allowField($allow_field)->save($input_data);
         return jsonOut($bool?'修改成功':'修改失败',(int)$bool);
     }
 

@@ -120,10 +120,12 @@ class UserReqEvent extends Base
      * */
     public function cancelAction($id,$user_id)
     {
-        return $this->save(
-            ['status'=>1]
-            ,['id'=>$id,'uid'=>$user_id]
-        );
+        $model = $this->where(['id'=>$id,'uid'=>$user_id])->find();
+        empty($model) && abort(40001,'资源异常');
+//        !empty($model->status) && abort(40001,'流程未处于审核状态无法操作');
+        $model->status=1;
+        $model->save();
+        return true;
     }
 
     /*

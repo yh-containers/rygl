@@ -7,6 +7,10 @@ use think\Validate;
 class Base extends Model
 {
     const AUTH_FIELD='';
+
+    //某块是否补全域名地址
+    protected $is_repair_domain=['api'];
+
     // 设置JSON数据返回数组
     protected $jsonAssoc = true;
 

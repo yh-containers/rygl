@@ -209,4 +209,21 @@ class User extends Common
 
         return jsonOut('获取成功',1, $model);
     }
+
+    //获取用户信息
+    public function info()
+    {
+        $user_id = $this->request->param('user_id',$this->user_id,'intval');
+        $model = new \app\common\model\Users();
+        $model = $model->find($user_id);
+
+        empty($model) && abort(40001,'资源异常');
+        $hidden_field = ['delete_time','update_time',''];
+        $model->hidden($hidden_field);
+
+        return jsonOut('获取成功',1, $model);
+
+
+
+    }
 }

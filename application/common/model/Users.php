@@ -26,6 +26,23 @@ class Users extends Base
     /*
      * 设置用户头像
      * */
+    public function getHeaderImgAttr($value)
+    {
+        if(empty($value)){
+            return $value;
+        }
+        //判断是那里获取的资源 --api直接加上图片地址
+        $module = request()->module();
+        if(in_array($module,$this->is_repair_domain)){
+            return get_image_location($value,true);
+        }
+
+        return $value;
+    }
+
+    /*
+     * 设置用户头像
+     * */
     public function setHeaderImgAttr($value,$data)
     {
         if(empty($data['id'])){//新增
@@ -33,7 +50,6 @@ class Users extends Base
         }
 
         return $value;
-
     }
 
     public function setPasswordAttr($value)

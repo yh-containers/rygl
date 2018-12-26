@@ -137,12 +137,14 @@ class Company extends Common
         return $model->actionDel($id);
     }
 
+    //员工工作汇报
     public function workReports()
     {
         $uid = $this->request->param('uid',0,'intval');
         $model = new \app\common\model\WorkReport();
         $list = $model->where('uid','=',$uid)->paginate();
         return view('users',[
+        return view('workReports',[
             'list' => $list,
             'page' => $list->render(),
             'count'=> count($list),

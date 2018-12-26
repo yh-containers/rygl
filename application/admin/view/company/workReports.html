@@ -13,23 +13,29 @@
 				<tr class="text-c">
 					<th width="25"><input type="checkbox" name="" value=""></th>
 					<th width="60">ID</th>
-					<th width="60">用户名</th>
+					<th width="150">汇报日期</th>
 					<th>留言内容</th>
-					<th width="100">操作</th>
+					<!--<th width="100">操作</th>-->
 				</tr>
 			</thead>
 			<tbody>
-				<!--{volist name="list" id="vo"}-->
+			{empty name="name"}
+			<tr class="text-c">
+				<td colspan="4" align="center">暂无工作汇报</td>
+			</tr>
+			{else /}
+				{volist name="list" id="vo"}
 					<tr class="text-c">
 						<td><input type="checkbox" value="1" name=""></td>
-						<td>1</td>
-						<td></td>
-						<td class="text-l">123123123123123123123</td>
-						<td class="td-manage">
+						<td>{$vo['id']}</td>
+						<td>{$vo['create_time']}</td>
+						<td class="text-l">{$vo['content']}</td>
+						<!--<td class="td-manage">
 							<a href="">查看详情</a>
-						</td>
+						</td>-->
 					</tr>
-				<!--{/volist}-->
+				{/volist}
+			{/empty}
 			</tbody>
 		</table>
 	</div>

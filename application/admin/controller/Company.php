@@ -143,7 +143,6 @@ class Company extends Common
         $uid = $this->request->param('uid',0,'intval');
         $model = new \app\common\model\WorkReport();
         $list = $model->where('uid','=',$uid)->paginate();
-        return view('users',[
         return view('workReports',[
             'list' => $list,
             'page' => $list->render(),

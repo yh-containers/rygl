@@ -189,4 +189,5 @@ class User extends Common
         $data = filter_data($info,$need_fields);
         return jsonOut('获取成功',1, $data);
     }
+
 }

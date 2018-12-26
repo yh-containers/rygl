@@ -4,7 +4,7 @@ namespace app\common\model;
 class UserReqEvent extends Base
 {
     //用作权限判断名
-    const AUTH_FIELD='c_n_auth';
+    const AUTH_FIELD = ['c_n_auth'];
 
     protected $name='user_req_event';
 
@@ -97,6 +97,7 @@ class UserReqEvent extends Base
         }
 
         $type_name = $this->type_name;
+        $status = $this->status;
         $status_name = $this->status_name;
 
         $content='';
@@ -114,6 +115,34 @@ class UserReqEvent extends Base
 
     }
 
+    /*
+     * 取消审核
+     * */
+    public function cancelAction($id,$user_id)
+    {
+        $model = $this->where(['id'=>$id,'uid'=>$user_id])->find();
+        empty($model) && abort(40001,'资源异常');
+//        !empty($model->status) && abort(40001,'流程未处于审核状态无法操作');
+        $model->status=1;
+        $model->save();
+        return true;
+    }
+
+    /*
+     * 流程审核
+     * */
+    public function authAction($id,$status)
+    {
+
+        $model = $this->find($id);
+        empty($model) && abort(40001,'资源异常');
+
+        !empty($model->status) && abort(40001,'流程未处于审核状态无法操作');
+
+        $model->status = $status == 2 ? 2 : 3 ;  //处理状态 2通过 3拒绝
+        $bool = $model->save();
+        return $bool;
+    }
 
 
     /*
@@ -123,4 +152,22 @@ class UserReqEvent extends Base
     {
         return $this->hasMany('UserReqEventFlow','rid')->order('id','desc');
     }
+
+    /*
+     * 获取申请类型
+     * */
+    public static function fieldsType()
+    {
+        $fields_type = [];
+        foreach (self::$fields_type as $key=>$vo) {
+            if($vo){
+                $fields_type[]=[
+                    'type' => $vo,
+                    'value' => $key
+                ];
+            }
+        }
+        return $fields_type;
+    }
+
 }

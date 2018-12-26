@@ -5,6 +5,7 @@ use think\model\concern\SoftDelete;
 
 class Company extends Base
 {
+    const AUTH_FIELD = ['c_m_base'];
     use SoftDelete;
 
     protected $name = 'company';

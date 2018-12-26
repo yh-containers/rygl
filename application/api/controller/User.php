@@ -79,6 +79,7 @@ class User extends Common
         $user_id = $this->request->param('user_id',$this->user_id,'intval');
 
         $query_day = $day<=0 ? ($year.'-'.$month) :( $year.'-'.$month.'-'.$day);
+
         $model =  new \app\common\model\UserSignIn();
         $list = $model->records($this->company_id,$query_day,$user_id);
         $need_fields = ['s_time'=>0,'times'=>0,'status'=>0,'nss'=>0,'nsm'=>0];
@@ -190,4 +191,19 @@ class User extends Common
         return jsonOut('获取成功',1, $data);
     }
 
+    //申请--编辑详情
+    public function reqEditDetail()
+    {
+        $id = $this->request->param('id',0,'intval');
+        empty($id) && abort(40001,'参数异常');
+
+        $model = new \app\common\model\UserReqEvent();
+        $model = $model->where(['id'=>$id,'uid'=>$this->user_id])->find();
+        empty($model) && abort(40001,'资源获取异常');
+
+        $hidden_fields = ['create_time','update_time','delete_time'];
+        $model->hidden($hidden_fields);
+
+        return jsonOut('获取成功',1, $model);
+    }
 }

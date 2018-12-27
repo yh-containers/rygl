@@ -20,7 +20,7 @@ class Company extends Common
     //公司操作-新增、编辑
     public function companyAdd()
     {
-        $id = $this->request->param('id',0,'intval');
+        $id = $this->request->param('id',$this->com_id,'intval');
         $model = new \app\common\model\Company();
         if($this->request->isAjax()) {
             $validate = new \app\common\validate\Company();

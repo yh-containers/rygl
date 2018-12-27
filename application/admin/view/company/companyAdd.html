@@ -1,7 +1,7 @@
 ﻿{extend name="base"}
 {block name="title"}我的桌面{/block}
 
-{block name="crumb"}首页,管理员管理,管理员操作{/block}
+{block name="crumb"}首页,公司管理,公司设置{/block}
 
 {block name="content"}
 <article class="page-container">
@@ -24,7 +24,11 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">LOGO地址</label>
 			<div class="layui-input-block">
-				<input type="text" name="logo" value="{$model['logo']}"  placeholder="LOGO地址" class="layui-input">
+				<input type="hidden" name="logo" value="{$model['logo']}"/>
+				<button type="button" class="layui-btn alone-upload" lay-data="{ 'data':{ 'route':'company_logo'}}" >
+					<i class="layui-icon">&#xe67c;</i>上传logo
+				</button>
+				<img src="{:$model['logo']}" width="80px" height="30px"/>
 			</div>
 		</div>
 
@@ -57,14 +61,15 @@
 
 <script>
     //Demo
-    layui.use('form', function(){
+    layui.use(['form','upload'], function(){
         var form = layui.form;
-
+        var upload = layui.upload; //得到 upload 对象
         //监听提交
         form.on('submit(formDemo)', function(data){
             layer.msg(JSON.stringify(data.field));
             return false;
         });
+        $.fn.upload_obj.upload_img(upload,'.alone-upload')
     });
 </script>
 {/block}

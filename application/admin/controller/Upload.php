@@ -12,12 +12,12 @@ class Upload extends Common
         // 移动到框架应用根目录/uploads/ 目录下
         $info = $file->move( $upload_root_path.$save_path);
         if($info){
-            return ['code'=>1, 'msg'=>lang('g_upload_success'),'data'=>$save_path.$info->getSaveName()];
+            return ['code'=>1, 'msg'=>'上传成功','data'=>$save_path.$info->getSaveName()];
 
         }else{
             // 上传失败获取错误信息
             $error= $file->getError();
-            return ['code'=>0, 'msg'=>lang('g_upload_error :error',['error'=>$error])];
+            return ['code'=>0, 'msg'=>$error];
         }
     }
 
@@ -32,7 +32,7 @@ class Upload extends Common
         $info = $file->move( $upload_root_path.$save_path);
         if($info){
             return ['code'=>0,
-                'msg'=>lang('g_upload_success'),
+                'msg'=>'上传成功',
                 'data'=>[
                     'src' => $this->request->domain().DIRECTORY_SEPARATOR. $save_path.$info->getSaveName()
                 ]
@@ -41,7 +41,7 @@ class Upload extends Common
         }else{
             // 上传失败获取错误信息
             $error= $file->getError();
-            return ['code'=>1, 'msg'=>lang('g_upload_error :error',['error'=>$error])];
+            return ['code'=>1, 'msg'=>$error];
         }
     }
 }

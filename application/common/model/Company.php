@@ -10,6 +10,20 @@ class Company extends Base
 
     protected $name = 'company';
 
+    /*
+     * 获取公司logo
+     * */
+    public function getLogoAttr($value)
+    {
+        if(empty($value)){
+            return $value;
+        }
+        //判断是那里获取的资源 --api直接加上图片地址
+        $module = request()->module();
+
+        return get_image_location($value,in_array($module,$this->is_repair_domain));;
+    }
+
 
     //获取工作时间--获取器
     public function getWorkTimeAttr($value)

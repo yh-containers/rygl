@@ -33,11 +33,8 @@ class Users extends Base
         }
         //判断是那里获取的资源 --api直接加上图片地址
         $module = request()->module();
-        if(in_array($module,$this->is_repair_domain)){
-            return get_image_location($value,true);
-        }
 
-        return $value;
+        return get_image_location($value,in_array($module,$this->is_repair_domain));
     }
 
     /*

@@ -8,8 +8,6 @@ class UserReqEvent extends Base
 
     protected $name='user_req_event';
 
-    protected $handle_content;
-    protected $handle_uid;
 
     public static $fields_type = ['','事假','调休','加班'];
     public static $fields_status = ['创建','取消','通过','拒绝'];
@@ -36,6 +34,13 @@ class UserReqEvent extends Base
     {
         return $value?strtotime($value):0;
     }
+
+    //获取审核时间
+    public function getAuthTimeAttr($value)
+    {
+        return $value?date('Y-m-d H:i:s',$value):'';
+    }
+
 
     //获取类型名
     public function getTypeNameAttr($value,$data)
@@ -74,43 +79,57 @@ class UserReqEvent extends Base
         });
     }
 
+
+
     /*
      * 获取操作用户
      * */
     protected function getHandleUid()
     {
-        if($this->handle_uid){
-            return $this->handle_uid;
+        if(!empty($this->auth_uid)){
+            return $this->auth_uid;
         }
 
         return $this->uid;
     }
-
 
     /*
      * 获取流程内容
      * */
     protected function getHandleContent($is_update=false)
     {
-        if($this->handle_content){
-            return $this->handle_content;
-        }
-
         $type_name = $this->type_name;
         $status = $this->status;
         $status_name = $this->status_name;
-
         $content='';
 
-        if(empty($status)){
-            $content = $is_update?'更新申请内容':'已'.$status_name.$type_name.'请耐心等待审核';
-        }elseif ($status==1){
-            $content = '已'.$status_name.$type_name.'申请';
-        }elseif ($status==2){
-            $content = '您的'.$type_name.'申请已审核'.$status_name;
-        }elseif ($status==3){
-            $content = '您的'.$type_name.'申请已被'.$status_name;
+
+        if($status>1){ //审核状态
+            if($status==2) {
+                $content = '申请已通过,';
+            }elseif($status ==3){
+                $content = '申请被拒绝,';
+            }
+            //补充理由
+            if(!empty($this->auth_content)){
+                $content .=' 理由:'.$this->auth_content;
+            }
+
+        }else{
+            if(empty($status)){
+                $content = $is_update?'更新申请内容':'已'.$status_name.$type_name.'请耐心等待审核';
+            }elseif ($status==1){
+                $content = '已'.$status_name.$type_name.'申请';
+            }elseif ($status==2){
+                $content = '您的'.$type_name.'申请已审核'.$status_name;
+            }elseif ($status==3){
+                $content = '您的'.$type_name.'申请已被'.$status_name;
+            }
+
         }
+
+
+
         return $content;
 
     }
@@ -131,16 +150,26 @@ class UserReqEvent extends Base
     /*
      * 流程审核
      * */
-    public function authAction($id,$status)
+    public function authAction()
     {
+        $input_data = func_get_args();
+        empty($input_data) && abort(40001,'参数异常');
+        $input_data = $input_data[0];
 
-        $model = $this->find($id);
+
+        $validate = new \app\common\validate\UserReqEvent();
+        $validate->scene('auth');
+        if(!$validate->check($input_data)) {
+            abort(40001,$validate->getError());
+        }
+
+        $model = $this->find($input_data['id']);
+
         empty($model) && abort(40001,'资源异常');
+        !empty($model->status) && abort(40001,'记录未处于审核状态,无法进行此操作');
 
-        !empty($model->status) && abort(40001,'流程未处于审核状态无法操作');
-
-        $model->status = $status == 2 ? 2 : 3 ;  //处理状态 2通过 3拒绝
-        $bool = $model->save();
+        $input_data['auth_time'] = time();
+        $bool=$model->save($input_data);
         return $bool;
     }
 
@@ -153,6 +182,21 @@ class UserReqEvent extends Base
         return $this->hasMany('UserReqEventFlow','rid')->order('id','desc');
     }
 
+    /*
+     * 关联用户
+     * */
+    public function linkUserInfo()
+    {
+        return $this->belongsTo('Users','uid');
+    }
+
+    /*
+     * 关联审核用户
+     * */
+    public function linkAuthUserInfo()
+    {
+        return $this->belongsTo('Users','auth_uid');
+    }
     /*
      * 获取申请类型
      * */

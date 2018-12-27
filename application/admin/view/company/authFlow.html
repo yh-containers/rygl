@@ -1,0 +1,53 @@
+﻿{extend name="base"}
+{block name="title"}部门列表{/block}
+
+{block name="crumb"}首页,流程审批,流程列表{/block}
+
+{block name="content"}
+
+<div class="page-container">
+	<div class="cl pd-5 bg-1 bk-gray">
+		<span class="l">
+			<div class="btn-group">
+			  <a href="{:url('authFlow')}" class="btn {:empty($type)?'btn-primary':'btn-default'} radius">全部</a>
+			  {volist name="type_all" id="vo"}
+				<a href="{:url('authFlow',['type'=>$vo['value']])}" class="btn {:$type==$vo['value']?'btn-primary':'btn-default'} radius">{$vo['type']}</a>
+			  {/volist}
+			</div>
+		</span>
+	</div>
+	<div class="mt-20">
+		<table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+			<thead>
+			<tr class="text-c">
+				<th width="80">ID</th>
+				<th>申请类型</th>
+				<th>用户名</th>
+				<th>创建日期</th>
+				<th>申请时间段</th>
+				<th width="120">状态</th>
+				<th width="120">操作</th>
+			</tr>
+			</thead>
+			<tbody>
+			{volist name="list" id="vo"}
+			<tr class="text-c">
+				<td>{$i}</td>
+				<td>{:$vo::$fields_type[$vo['type']]}</td>
+				<td>{$vo['link_user_info']['name']}</td>
+				<td>{$vo['create_time']}</td>
+				<td>{:$vo['start_time'].'~~'.$vo['end_time']}</td>
+				<td class="td-status">{:$vo::$fields_status[$vo['status']]}</td>
+				<td class="f-14 td-manage">
+					<a href="{:url('authFlowDetail',['id'=>$vo['id']])}">查看</a>
+
+				</td>
+			</tr>
+			{/volist}
+		</table>
+	</div>
+</div>
+
+{$page|raw}
+
+{/block}

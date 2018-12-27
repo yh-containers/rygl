@@ -149,4 +149,47 @@ class Company extends Common
             'count'=> count($list),
         ]);
     }
+
+    //流程审批
+    public function authFlow()
+    {
+        $type = $this->request->param('type',0,'intval');
+        $model = new \app\common\model\UserReqEvent();
+        $where[] = ['cid','=',$this->com_id];
+        $type && $where[] = ['type','=',$type];
+
+        $list = $model->with(['linkUserInfo'])->where($where)->paginate();
+        return view('authFlow',[
+            'type' => $type,
+            'list' => $list,
+            'page' => $list->render(),
+            'type_all' => \app\common\model\UserReqEvent::fieldsType(),
+        ]);
+    }
+
+    //申请详情
+    public function authFlowDetail()
+    {
+        $id = $this->request->param('id',0,'intval');
+        $cid = $this->request->param('cid',null,'intval');  //公司id
+        is_null($cid) && $this->com_id && $cid = $this->com_id; //公司id
+        $where[] = ['id','=',$id];
+        //按公司查询
+        !empty($cid) &&   $where[] =['cid','=',$cid];
+        $model = new \app\common\model\UserReqEvent();
+        $model = $model->with(['linkUserInfo','linkFlow','linkAuthUserInfo'])->where($where)->find();
+        return view('authFlowDetail',[
+            'model' => $model
+        ]);
+    }
+
+    //流程审核动作
+    public function authFlowAction()
+    {
+        $input_data = $this->request->param();
+        $input_data['auth_uid'] = $this->admin_id;
+        $model = new \app\common\model\UserReqEvent();
+        $bool = $model->authAction($input_data);
+        return ['code'=>(int)$bool,'msg'=>$bool?'操作成功':'操作失败'];
+    }
 }

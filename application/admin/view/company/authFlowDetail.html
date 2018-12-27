@@ -1,0 +1,142 @@
+﻿{extend name="base"}
+{block name="title"}我的桌面{/block}
+
+{block name="crumb"}首页,流程审批,流程详情{/block}
+
+{block name="content"}
+<article class="page-container">
+
+	<div class="row cl">
+		<div class="col-xs-7">
+			<div class="panel panel-default">
+				<div class="panel-header">
+					申请信息
+				</div>
+				<div class="panel-body">
+					<table class="layui-table">
+						<tbody>
+							<tr>
+								<td width="20">申请类型</td>
+								<td width="60">{:empty($model)?'':$model::$fields_type[$model['type']]}</td>
+								<td width="20">用户名</td>
+								<td width="60">{$model['link_user_info']['name']}</td>
+								<td width="20">联系电话</td>
+								<td width="60">{$model['link_user_info']['phone']}</td>
+							</tr>
+							<tr>
+								<td>内容</td>
+								<td colspan="5">{$model['content']}</td>
+							</tr>
+							<tr>
+								<td>创建时间</td>
+								<td>{$model['create_time']}</td>
+								<td></td>
+								<td></td>
+								<td>状态</td>
+								<td>{:empty($model)?'':$model::$fields_status[$model['status']]}</td>
+							</tr>
+							<tr>
+								<td>审核时间</td>
+								<td>{$model['auth_time']}</td>
+								<td></td>
+								<td></td>
+								<td>审核人</td>
+								<td>{$model['link_auth_user_info']['name']}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<div class="panel panel-default mt-20">
+				<div class="panel-header">
+					审核处理
+				</div>
+				<div class="panel-body">
+					<form class="layui-form" action="{:url('authFlowAction')}" id="form">
+						<input type="hidden" name="id" value="{$model['id']}"/>
+						<div class="layui-form-item">
+							<label class="layui-form-label">审核内容</label>
+							<div class="layui-input-block">
+								<textarea name="auth_content" placeholder="请输入内容"  class="layui-textarea">{$model['auth_content']}</textarea>
+							</div>
+						</div>
+						{if(empty($model['status']))}
+						<div class="layui-form-item">
+							<label class="layui-form-label">审核状态</label>
+							<div class="layui-input-block">
+								<input type="radio" name="status" value="2" title="通过" checked>
+								<input type="radio" name="status" value="3" title="拒绝">
+							</div>
+						</div>
+						<div class="layui-form-item">
+							<div class="layui-input-block">
+								<button class="layui-btn" type="button" id="submit">立即提交</button>
+							</div>
+						</div>
+						{/if}
+
+					</form>
+				</div>
+
+			</div>
+		</div>
+
+		<div class="col-xs-5">
+			<div class="panel panel-default">
+				<div class="panel-header">
+					操作流程
+				</div>
+				<div class="panel-body">
+					<ul class="layui-timeline">
+						{volist name="model['link_flow']" id="vo"}
+						<li class="layui-timeline-item">
+							<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+							<div class="layui-timeline-content layui-text">
+								<h3 class="layui-timeline-title">{$vo['create_time']}</h3>
+								<p>
+									{$vo['content']}
+								</p>
+							</div>
+						</li>
+						{/volist}
+
+						<li class="layui-timeline-item">
+							<i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+							<div class="layui-timeline-content layui-text">
+								<div class="layui-timeline-title">过去</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+</article>
+
+
+{/block}
+{block name="script"}
+
+<script>
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form;
+    });
+
+    $("#submit").click(function(){
+        layer.confirm('是否提交审核',function(){
+            $.post($("#form").attr('action'),$("#form").serialize(),function(result){
+                layer.msg(result.msg)
+				if(result.code==1){
+                    setTimeout(function(){window.location.reload()},1000)
+				}
+			})
+		})
+	})
+
+</script>
+{/block}

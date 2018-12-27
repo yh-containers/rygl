@@ -22,10 +22,29 @@ class UserReqEvent extends Validate
         'end_time.require'       => '结束时间必须设置',
         'end_time.date'          => '结束时间格式异常',
         'end_time.gt'            => '结束时间必须大于开始时间',
+
+        //审核动作
+        'id.require'            =>  '参数异常:attribute',
+        'id.gt'                 =>  '参数异常:attribute',
+        'auth_uid.require'      =>  '参数异常:attribute',
+        'auth_uid.gt'           =>  '参数异常:attribute',
+        'status.require'        =>  '参数异常:attribute',
+        'status.in'             =>  '参数:attribute范围异常',
     ];
 
 
     protected $scene = [
         'admin_add' => 'name,logo,address',
     ];
+
+    //api注册
+    public function sceneAuth()
+    {
+        return $this->only(['id','auth_uid','status'])
+            ->append('id','require|gt:0')
+            ->append('auth_uid','require|gt:0')
+            ->append('status','require|in:2,3')
+            ;
+    }
+
 }

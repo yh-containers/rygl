@@ -226,5 +226,54 @@ function handle_data_day($arr,$field,$format='Y-m-d'){
 }
 
 
+/*
+ * 获取当前月份所有日期
+ * @param $month string rule 2018-12-1
+ * */
+function get_month_day($month='')
+{
+    $week_arr = array("日","一","二","三","四","五","六"); //先定义一个数组
+
+    $time = $month?strtotime($month):time();
+    $total_day = date('t',$time);  //当前月份总共有多少天
+    $year = date('Y',$time);
+    $month = date('m',$time);
+    $days = $week=[];
+
+    for($i=1;$i<=$total_day;$i++) {
+        $days[] = $i;
+        $week[] = $week_arr[date('w',strtotime($year.'-'.$month.'-'.$i))];
+    }
+
+    $days = range(1,$total_day);
+    $days_str = implode(',',$days);
+    $days_str = preg_replace('/([\d]+)(,?)/',$year.'-'.$month.'-$1$2',$days_str);
+    return [$year,$month,$days,$week,explode(',',$days_str)];
+}
+
+
+//获取数组深度
+function get_arr_deep(array $arr,$max_width=1){
+    $deep=1;$max=1;$width=1;
+    foreach($arr as $item){
+        if(is_array($item)){
+            $temp_width=count($item);
+            if($temp_width>$width){
+                $max_width = $temp_width;
+            }
+            list($max,$max_width)=get_arr_deep($item,$max_width);
+            $max++;
+            if($max < $deep){
+                $max = $deep;
+            }
+
+        }
+    }
+    return [$max,$max_width];
+}
+
+
+
+
 
 

@@ -1,0 +1,43 @@
+﻿{extend name="base"}
+{block name="title"}部门列表{/block}
+
+{block name="crumb"}首页,流程审批,流程列表{/block}
+
+{block name="content"}
+
+<div class="page-container">
+	<div class="cl pd-5 bg-1 bk-gray">
+		<span class="l">
+
+		</span>
+	</div>
+	<div class="mt-20">
+		<table class="table table-border table-bordered table-bg table-hover table-sort table-responsive">
+			<thead>
+			<tr class="text-c">
+				<th width="80">ID</th>
+				<th>用户名</th>
+				<th>上班天数</th>
+				<th>打卡次数</th>
+				<th>迟到次数</th>
+				<th>早退次数</th>
+				<th>请假次数</th>
+			</tr>
+			</thead>
+			<tbody>
+			{volist name="list" id="vo"}
+			<tr class="text-c">
+				<td>{$i}</td>
+				<td>{$vo['name']}</td>
+				<td>{:$vo['link_sign_count']['work_day']?$vo['link_sign_count']['work_day']:0}</td>
+				<td>{:$vo['link_sign_count']['sign_times']?$vo['link_sign_count']['sign_times']:0}</td>
+				<td>{:$vo['link_sign_count']['late_times']?$vo['link_sign_count']['late_times']:0}</td>
+				<td>{:$vo['link_sign_count']['advance_times']?$vo['link_sign_count']['advance_times']:0}</td>
+				<td>{:$vo['link_req_event_count']['req_times']?$vo['link_req_event_count']['req_times']:0}</td>
+			</tr>
+			{/volist}
+		</table>
+	</div>
+</div>
+
+{/block}

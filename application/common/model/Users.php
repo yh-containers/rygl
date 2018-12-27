@@ -274,7 +274,7 @@ class Users extends Base
         return  sha1($str);
     }
 
-    //获取用户打卡记录--按月获取
+    //获取用户打卡记录--按月获取--汇总
     public function workSignRecord($company_id,$year_month,$user_id=0)
     {
         $opt_query = 'select';
@@ -303,6 +303,26 @@ class Users extends Base
             ])->$opt_query();
         return $data;
     }
+
+    //获取用户打卡记录--按月获取--详细
+    public function workSignDetail($company_id,$year_month,$user_id=0)
+    {
+        $where[] =['cid','=',$company_id];
+        $user_id  &&  $where[] =['id','=',$user_id];
+        $start_time = strtotime($year_month);
+        $end_time = strtotime('+1 month',$start_time);
+        $data = $this->where($where)->with([
+            'linkSignCount'=>function($query)use($company_id,$start_time,$end_time){
+                return $query->where(['cid'=>$company_id])->whereBetween('s_time',$start_time.','.$end_time);
+            },
+            'linkReqEventCount'=>function($query)use($company_id,$start_time,$end_time){
+                return $query->where(['cid'=>$company_id])->whereBetween('create_time',$start_time.','.$end_time);
+
+            }
+        ])->select();
+        return $data;
+    }
+
 
 
     //关联公司信息

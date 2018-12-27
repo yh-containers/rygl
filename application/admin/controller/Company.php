@@ -192,4 +192,27 @@ class Company extends Common
         $bool = $model->authAction($input_data);
         return ['code'=>(int)$bool,'msg'=>$bool?'操作成功':'操作失败'];
     }
+
+
+
+    //打卡记录
+    public function signLogs()
+    {
+        $year = $this->request->request('year',0,'intval');
+        $time[] = empty($year)?date('Y'):$year;
+        $month = $this->request->request('month',0,'intval');
+        $time[] = empty($month)?date('m'):$month;
+        $time[] = '1';
+
+        $year_month = implode('-',$time);
+
+        $model = new \app\common\model\Users();
+        $list = $model->workSignRecord($this->com_id,$year_month);
+
+
+
+        return view('signLogs',[
+            'list'=>$list,
+        ]);
+    }
 }

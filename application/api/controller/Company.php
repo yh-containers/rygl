@@ -75,8 +75,8 @@ class Company extends Common
         $data = $model->workSignRecord($this->company_id,$year_month);
         $need_fields = [
             'id'=>0,'name'=>'','header_img'=>'',
-            'link_sign_count'=>['sign_times'=>'1|0','late_times'=>'1|0','advance_times'=>'1|0','work_day'=>'1|0'],
-            'link_req_event_count'=>['req_times'=>0],
+            'link_sign_count'=>['sign_times'=>'>0','late_times'=>'>0','advance_times'=>'>0','work_day'=>'>0'],
+            'link_req_event_count'=>['req_times'=>'>0'],
         ];
         $list = filter_data($data,$need_fields,2);
         return jsonOut('获取成功',1,$list);

@@ -62,9 +62,12 @@ function filter_data($data,$need_fields,$mode=1)
             if(empty($handle_data)){
                 if(is_array($vo)){
                     $handel_result = handle_spe_filter_arr($vo);
-
-                    $result_data = array_merge($result_data,$handel_result);
-
+                    if(!empty($handel_result)){
+                        $result_data = array_merge($result_data,$handel_result);
+                    }else{
+                        //数据为空保留键名
+                        $result_data[$key] = [];
+                    }
                 }else{
                     $result_data[$key] = [];
                 }
@@ -121,7 +124,7 @@ function handle_filter_arr($filed_info, $handle_data)
     return $data;
 }
 
-//特殊处理数据--一维数组
+//特殊处理数据--一维数组  > 切换值
 function handle_spe_filter_arr($filed_info)
 {
     $data = [];
@@ -131,7 +134,7 @@ function handle_spe_filter_arr($filed_info)
         }else{
             $change_key =$search_key = $fk;
         }
-        $str_pos = strpos($item,'|');
+        $str_pos = strpos($item,'>');
         if($str_pos!==false){
             $data[$change_key] = substr($item,$str_pos+1);
         }

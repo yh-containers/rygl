@@ -84,6 +84,7 @@ class Company extends Common
         return jsonOut('获取成功',1,$list);
     }
 
+
     //工作日志-列表
     public function reportList(){
 
@@ -102,6 +103,17 @@ class Company extends Common
             });
 
         return jsonOut('获取成功',1,$list);
+	}
+
+    //审核动作
+    public function reqAuth()
+    {
+        $input_data = $this->request->param();
+        $model = new \app\common\model\UserReqEvent();
+        $input_data['auth_uid'] = $this->user_id;
+        $input_data['cid'] = $this->company_id;
+        $bool = $model->authAction($input_data);
+        return jsonOut($bool?'操作成功':'操作失败',(int)$bool);
 
     }
 }

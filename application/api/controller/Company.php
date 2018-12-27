@@ -1,6 +1,8 @@
 <?php
 namespace app\api\controller;
 
+use think\Db;
+
 class Company extends Common
 {
     protected $is_need_auth=true;
@@ -80,6 +82,27 @@ class Company extends Common
         ];
         $list = filter_data($data,$need_fields,2);
         return jsonOut('获取成功',1,$list);
+    }
+
+    //工作日志-列表
+    public function reportList(){
+
+        $report_date = $this->request->request('report_date',Date('Y-m-d',time()));
+
+        $start_time = strtotime($report_date);
+
+        $end_time = strtotime($report_date . ' 23:59:59');
+
+        $list = Db::view('WorkReport', ['id', 'content' , 'create_time'])
+            ->view('Users', 'name', 'WorkReport.uid=Users.id')
+            ->where('WorkReport.create_time','between',[$start_time,$end_time])
+            ->paginate()->each(function($item, $key){
+                $item['create_time'] = date('Y-m-d',$item['create_time']);
+                return $item;
+            });
+
+        return jsonOut('获取成功',1,$list);
+
     }
 }
 

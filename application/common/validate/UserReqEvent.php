@@ -26,6 +26,8 @@ class UserReqEvent extends Validate
         //审核动作
         'id.require'            =>  '参数异常:attribute',
         'id.gt'                 =>  '参数异常:attribute',
+        'cid.require'           =>  '参数异常:attribute',
+        'cid.gt'                =>  '参数异常:attribute',
         'auth_uid.require'      =>  '参数异常:attribute',
         'auth_uid.gt'           =>  '参数异常:attribute',
         'status.require'        =>  '参数异常:attribute',
@@ -40,8 +42,9 @@ class UserReqEvent extends Validate
     //api注册
     public function sceneAuth()
     {
-        return $this->only(['id','auth_uid','status'])
+        return $this->only(['id','cid','auth_uid','status'])
             ->append('id','require|gt:0')
+            ->append('cid','require|gt:0')
             ->append('auth_uid','require|gt:0')
             ->append('status','require|in:2,3')
             ;

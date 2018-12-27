@@ -167,6 +167,8 @@ class UserReqEvent extends Base
 
         empty($model) && abort(40001,'资源异常');
         !empty($model->status) && abort(40001,'记录未处于审核状态,无法进行此操作');
+        !empty($input_data['cid']) && $model->cid !=$input_data['cid'] && abort(40001,'操作流程异常');
+
 
         $input_data['auth_time'] = time();
         $bool=$model->save($input_data);

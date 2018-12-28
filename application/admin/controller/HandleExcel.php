@@ -97,10 +97,8 @@ class HandleExcel extends Common
         header('Content-Disposition: attachment;filename="'.$month_title.'.xlsx"');//告诉浏览器输出浏览器名称
         header('Cache-Control: max-age=0');//禁止缓存
         $writer = new Xlsx(self::$spreadsheet);
-        $writer->save('php://output');
+        $writer->save('php://stdout');
 
-//        $writer = new Xlsx(self::$spreadsheet);
-//        $writer->save('hello world.xlsx');
     }
 
     private $record_prev_data; //记录上一条记录

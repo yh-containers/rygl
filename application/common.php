@@ -254,7 +254,7 @@ function get_month_day($month='')
 
 //获取数组深度
 function get_arr_deep(array $arr,$max_width=1){
-    $deep=1;$max=1;$width=1;
+    $deep=1;$max=1;$width=1;$include_width=0;
     foreach($arr as $item){
         if(is_array($item)){
             $temp_width=count($item);
@@ -266,10 +266,11 @@ function get_arr_deep(array $arr,$max_width=1){
             if($max < $deep){
                 $max = $deep;
             }
-
+        }else{
+            $include_width++;
         }
     }
-    return [$max,$max_width];
+    return [$max,$max_width,($max_width+$include_width)];
 }
 
 

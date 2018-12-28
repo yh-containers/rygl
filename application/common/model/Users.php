@@ -312,14 +312,24 @@ class Users extends Base
         $start_time = strtotime($year_month);
         $end_time = strtotime('+1 month',$start_time);
         $data = $this->where($where)->with([
-            'linkSignCount'=>function($query)use($company_id,$start_time,$end_time){
+            'linkSign'=>function($query)use($company_id,$start_time,$end_time){
                 return $query->where(['cid'=>$company_id])->whereBetween('s_time',$start_time.','.$end_time);
             },
             'linkReqEventCount'=>function($query)use($company_id,$start_time,$end_time){
-                return $query->where(['cid'=>$company_id])->whereBetween('create_time',$start_time.','.$end_time);
+                return $query->field([
+                    'uid','count(*)'=>'req_times','sum(if(type=1,1,0))'=>'type_1','sum(if(type=2,1,0))'=>'type_2',
+                    'sum(if(type=3,1,0))'=>'type_3',
+                ])->group('uid')->where(['cid'=>$company_id])->whereBetween('create_time',$start_time.','.$end_time);
 
             }
-        ])->select();
+        ])->select()->each(function($item,$index){
+            $sign_data = [];
+            foreach ($item['link_sign'] as $key=>&$vo){
+                $sign_day = date('Y-m-d',$vo['s_time']);
+                $sign_data[$sign_day.'-'.$vo['status']] = $vo->toArray();
+            }
+            $item['sign_data'] = $sign_data;
+        });
         return $data;
     }
 

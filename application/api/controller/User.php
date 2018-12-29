@@ -170,7 +170,7 @@ class User extends Common
 
         $model = new \app\common\model\UserReqEvent();
 
-        $info = $model->with(['linkFlow'])->where([
+        $info = $model->with(['linkUserInfo','linkAuthUserInfo'])->where([
             ['id','=',$id],
             ['cid','=',$this->company_id]
         ])->find();
@@ -179,16 +179,16 @@ class User extends Common
         $info->append(['type_name','status_name']);
 
         //获取当前登录者用户信息
-        if($this->user_id!=$info['uid']){
-            list($bool) = $this->checkUserAuth($model);
-            !$bool && abort(40001,'你没有权限查看');
-        }
+        list($bool) = $this->checkUserAuth($model);
+        !$bool && abort(40001,'你没有权限查看');
         $need_fields = [
-            'id' =>0,'type'=>0,'type_name'=>'','content'=>'','start_time'=>'','end_time'=>'',
-            'status'=>'','status_name'=>'','create_time'=>'',
-            'link_flow'=>[
-                'id'=>0,'content'=>0,'create_time'=>'',
-            ]
+            'id' =>0,'uid'=>0,'type'=>0,'type_name'=>'','content'=>'','start_time'=>'','end_time'=>'',
+            'status'=>'','status_name'=>'','create_time'=>'','auth_uid'=>0,'auth_content'=>'','auth_time'=>'',
+            'link_user_info'=>[
+                'name|user_name'=>0,
+            ],'link_auth_user_info'=>[
+                'name|auth_user_name'=>'',
+            ],
         ];
         $data = filter_data($info,$need_fields);
         return jsonOut('获取成功',1, $data);
@@ -210,6 +210,18 @@ class User extends Common
         return jsonOut('获取成功',1, $model);
     }
 
+    //取消审核
+    public function reqCancel()
+    {
+        $id = $this->request->param('id',0,'intval');
+        empty($id) && abort(40001,'参数异常');
+
+        $model = new \app\common\model\UserReqEvent();
+        $bool=$model->cancelAction($id,$this->user_id);
+
+        return jsonOut($bool?'操作成功':'操作失败', (int)$bool);
+    }
+
     //提交工作汇报
     public function reportAdd()
     {
@@ -218,7 +230,7 @@ class User extends Common
         $validate->scene(self::SCENE);
         $model =  new \app\common\model\WorkReport();
 
-        if(isset($input_data['id'])){
+        if(!empty($input_data['id'])){
             $rs = $model->where(['id'=>$input_data['id'],'uid'=>$this->user_id])->find();
             empty($rs) && abort(40001,'资源获取异常');
         }

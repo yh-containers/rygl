@@ -8,7 +8,7 @@ use think\facade\Env;
 class HandleExcel extends Common
 {
     //文件保存有效时间
-    const expire_second = 60;
+    const expire_second = 1;
 
     protected static $file_path = '/temp_file/excel/';
     protected static $spreadsheet;
@@ -44,7 +44,7 @@ class HandleExcel extends Common
                 $create_time = substr($vo,0,10);
                 //文件前缀
                 $prefix = substr($vo,0,1);
-                if(!in_array($prefix,self::$ignore_file) && is_numeric($create_time) && $create_time-self::$current_time > self::expire_second) {
+                if(!in_array($prefix,self::$ignore_file) && is_numeric($create_time) && self::$current_time-$create_time > self::expire_second) {
                     //删除文件
                     unlink($clear_path.$vo);
                 }

@@ -230,7 +230,7 @@ class User extends Common
         $validate->scene(self::SCENE);
         $model =  new \app\common\model\WorkReport();
 
-        if(isset($input_data['id'])){
+        if(!empty($input_data['id'])){
             $rs = $model->where(['id'=>$input_data['id'],'uid'=>$this->user_id])->find();
             empty($rs) && abort(40001,'资源获取异常');
         }

@@ -22,9 +22,4 @@ class WorkReport extends Base
     {
         return $this->belongsTo('Users','uid');
     }
-
-    public function linkUsersInfo()
-    {
-        return $this->belongsTo('Users','uid');
-    }
 }

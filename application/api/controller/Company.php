@@ -94,12 +94,15 @@ class Company extends Common
 
         $end_time = strtotime($report_date . ' 23:59:59');
 
-        $list = Db::view('WorkReport', ['id', 'content' , 'create_time'])
-            ->view('Users', 'name', 'WorkReport.uid=Users.id')
-            ->where('WorkReport.create_time','between',[$start_time,$end_time])
-            ->paginate()->each(function($item, $key){
-                $item['create_time'] = date('Y-m-d',$item['create_time']);
-                return $item;
+        $model = new \app\common\model\WorkReport();
+
+        $list = $model
+            ->whereBetweenTime('work_report.create_time',$start_time,$end_time)
+            ->field(['type','content','create_time'])
+            ->withJoin(['linkUserInfo'=>['name']],'LEFT')
+            ->paginate()->each(function($item,$index){
+                $item['name'] = $item['link_user_info']['name'];
+                unset($item['link_user_info']);
             });
 
         return jsonOut('获取成功',1,$list);

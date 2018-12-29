@@ -17,4 +17,14 @@ class WorkReport extends Base
         return $value?strtotime($value):0;
     }
 
+
+    public function linkUserInfo()
+    {
+        return $this->belongsTo('Users','uid');
+    }
+
+    public function linkUsersInfo()
+    {
+        return $this->belongsTo('Users','uid');
+    }
 }

@@ -222,7 +222,7 @@ class User extends Common
             $rs = $model->where(['id'=>$input_data['id'],'uid'=>$this->user_id])->find();
             empty($rs) && abort(40001,'资源获取异常');
         }
-        
+
         $input_data['uid'] = $this->user_id;
         $input_data['cid'] = $this->company_id;
 

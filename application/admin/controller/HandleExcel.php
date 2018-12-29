@@ -36,7 +36,8 @@ class HandleExcel extends Common
 
     private function _handleFileClear()
     {
-        $clear_path = self::$save_path.self::FILE_PATH;
+        $clear_path = self::$save_path.self::$file_path;
+        $clear_path = substr($clear_path,0,-10);
         if(!empty($clear_path)) {
             $arr = scandir($clear_path);
             foreach ($arr as $vo) {
@@ -127,7 +128,7 @@ class HandleExcel extends Common
 
         try{
             $writer = new Xlsx(self::$spreadsheet);
-            $path = self::FILE_PATH.$this->admin_id.'_'.$this->com_id.'_'.date('Y-m-d-H').rand(1000,9999).'.xlsx';
+            $path = self::$file_path.$this->admin_id.'_'.$this->com_id.'_'.date('Y-m-d-H').rand(1000,9999).'.xlsx';
             $writer->save(self::$save_path.$path);
             return ['code'=>1,'msg'=>'获取成功','path'=>$path];
         }catch (\Exception $e){

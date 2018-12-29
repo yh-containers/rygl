@@ -218,10 +218,11 @@ class User extends Common
         $validate->scene(self::SCENE);
         $model =  new \app\common\model\WorkReport();
 
-        $report_info = $model->find($input_data['id']);
-        if($report_info['uid'] != $this->user_id){
-            return jsonOut('操作失败！',0);
+        if(isset($input_data['id'])){
+            $rs = $model->where(['id'=>$input_data['id'],'uid'=>$this->user_id])->find();
+            empty($rs) && abort(40001,'资源获取异常');
         }
+        
         $input_data['uid'] = $this->user_id;
         $input_data['cid'] = $this->company_id;
 

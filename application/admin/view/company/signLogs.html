@@ -8,7 +8,9 @@
 <div class="page-container">
 	<div class="cl pd-5 bg-1 bk-gray">
 		<span class="r ">
-			<a class="btn btn-primary radius mr-20" href="{:url('HandleExcel/workLogs')}">下载excel</a>
+			<!--href="{:url('HandleExcel/workLogs')}"-->
+			<button class="btn btn-primary radius mr-20" id="down-excel">下载excel</button>
+
 		</span>
 	</div>
 	<div class="mt-20">
@@ -39,5 +41,53 @@
 		</table>
 	</div>
 </div>
+<div class="panel panel-secondary" id="down" style="display: none;" >
+	<div class="panel-header">excle下载</div>
+	<div class="panel-body text-c">
+		<a href="javascript:;" target="_blank">点击下载</a>
+	</div>
+</div>
+{/block}
 
+{block name="script"}
+<script>
+    //记录文件下载路径
+    $(function(){
+        var file_path = '';
+
+        $("#down-excel").click(function(){
+            //当前已请求过-获取了文件path
+            if(file_path){
+                openDownPage();
+            }else{
+                var index = layer.load();
+                $.get("{:url('HandleExcel/workLogs')}",function(result){
+                    if(result.code==1){
+                        file_path = result.path
+                        $("#down a").attr('href',file_path)
+                    }else{
+                        $("#down a").text(result.msg)
+                    }
+                    openDownPage();
+                    layer.close(index);
+                })
+            }
+
+
+        })
+    })
+
+	//弹窗
+    function openDownPage()
+    {
+        layer.open({
+            type: 1,
+            title: false,
+            area:["400px","auto"],
+            shadeClose:true,
+            content: $('#down')
+        })
+    }
+
+</script>
 {/block}

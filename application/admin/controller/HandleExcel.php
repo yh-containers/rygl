@@ -3,21 +3,52 @@ namespace app\admin\controller;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use think\App;
+use think\facade\Env;
 
 class HandleExcel extends Common
 {
+    //文件保存有效时间
+    const expire_second = 60;
+
+    protected static $file_path = '/temp_file/excel/';
     protected static $spreadsheet;
     protected static $sheet;
-//    protected static
+    protected static $save_path;
+    //当前请求时间
+    public static $current_time=0;
+
+    //忽略的文件 前缀
+    public static $ignore_file = ['.'];
 
 
     public function __construct(App $app = null)
     {
         parent::__construct($app);
 
-
+        self::$current_time = time();
+        self::$file_path = self::$file_path.self::$current_time;
+        self::$save_path = Env::get('root_path').'/public';
         self::$spreadsheet = new Spreadsheet();
         self::$sheet = self::$spreadsheet->getActiveSheet();
+        //处理过期文件
+        $this->_handleFileClear();
+    }
+
+    private function _handleFileClear()
+    {
+        $clear_path = self::$save_path.self::FILE_PATH;
+        if(!empty($clear_path)) {
+            $arr = scandir($clear_path);
+            foreach ($arr as $vo) {
+                $create_time = substr($vo,0,10);
+                //文件前缀
+                $prefix = substr($vo,0,1);
+                if(!in_array($prefix,self::$ignore_file) && is_numeric($create_time) && $create_time-self::$current_time > self::expire_second) {
+                    //删除文件
+                    unlink($clear_path.$vo);
+                }
+            }
+        }
     }
 
     //工作日志导出
@@ -92,15 +123,16 @@ class HandleExcel extends Common
 //        dump($data);exit;
         $this->handleSheetData($data);
 
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');//告诉浏览器输出07Excel文件
-//header(‘Content-Type:application/vnd.ms-excel‘);//告诉浏览器将要输出Excel03版本文件
-        header('Content-Disposition: attachment;filename="'.$month_title.'.xlsx"');//告诉浏览器输出浏览器名称
-        header('Cache-Control: max-age=0');//禁止缓存
-        $writer = new Xlsx(self::$spreadsheet);
-        $writer->save('php://output');
 
-//        $writer = new Xlsx(self::$spreadsheet);
-//        $writer->save('hello world.xlsx');
+
+        try{
+            $writer = new Xlsx(self::$spreadsheet);
+            $path = self::FILE_PATH.$this->admin_id.'_'.$this->com_id.'_'.date('Y-m-d-H').rand(1000,9999).'.xlsx';
+            $writer->save(self::$save_path.$path);
+            return ['code'=>1,'msg'=>'获取成功','path'=>$path];
+        }catch (\Exception $e){
+            return ['code'=>0,'msg'=>'资源异常:'.$e->getMessage()];
+        }
     }
 
     private $record_prev_data; //记录上一条记录
@@ -193,7 +225,6 @@ class HandleExcel extends Common
             return;
         }
         list($col,$row,$deep,$width,$type) = $this->record_prev_data;
-        dump($current_row);
         $handle_data = $this->original_data[$current_row];
         if(isset($handle_data[$current_col])){
             if(is_array($handle_data)&& $deep>1){
